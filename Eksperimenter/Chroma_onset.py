@@ -25,14 +25,17 @@ def get_chroma_at_time(target_time):
 # Onset strength envelope is a function that tracks changes in energy over time
 onset_envelope = librosa.onset.onset_strength(y=y, sr=sr)
 
-    # converts onset frame indices to actual timestamps in seconds
-times = librosa.times_like(onset_envelope, sr=sr)
-
-    # detects the points in time where new notes or percussive events start, uses onset_envelope to find peaks
+# detects the points in time where new notes or percussive events start, uses onset_envelope to find peaks
 onset_frames = librosa.onset.onset_detect(onset_envelope=onset_envelope, sr=sr)
 
 
-target_time = 5.0
+# converts onset frame indices to actual timestamps in seconds
+#times_onset = librosa.times_like(onset_envelope, sr=sr)
+#since we dont need all the frame times only where onsets are detected the code is updated:
+onset_times = librosa.frames_to_time(onset_frames, sr=sr)
+
+
+target_time = 10.0
 chroma_at_time = get_chroma_at_time(target_time)
 
 # Print the chroma vector
@@ -45,9 +48,9 @@ librosa.display.specshow(chroma, x_axis='time', y_axis='chroma', cmap='Greys')
 plt.colorbar(label="Intensity")
 plt.title("Chroma Features")
 
-#plot detected onsets as vertical red dashed lines
-for onset in onset_frames:
-    plt.axvline(onset, color='r', linestyle='--',label='Onset' if onset== onset_frames[0] else "")
+#plot detected onsets as vertical red dashed lines each time they have been detected
+for onset in onset_times:
+    plt.axvline(onset, color='r', linestyle='--',label='Onset' if onset== onset_times[0] else "")
 
 plt.xlabel("Time (s)")
 plt.ylabel("Pitch Class")
