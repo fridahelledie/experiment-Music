@@ -13,7 +13,7 @@ P = []  # alignment path
 
 previous = None  # stores the last movement direction
 runCount = 1  # prevent excessive movement in the same direction
-MaxRunCount = 10  # Limit on how many consecutive movements in the same direction are allowed.
+MaxRunCount = 100  # Limit on how many consecutive movements in the same direction are allowed.
 c = 10  # Warping constraint, defining the alignment window.
 i = 1
 j = 1
@@ -54,14 +54,13 @@ def EvaluatePathCost(i, j, X, Y):
 
     X_np = np.hstack(X)
     # Limit the alignment window to c elements
-    seq1 = X_np[:, max(0, i - c):i]
-    seq2 = Y[:, max(0, j - c):j]
+    seq1 = X_np[:, max(0, i - (c // 2)):i]  # Half window for each sequence
+    seq2 = Y[:, max(0, j - (c // 2)):j]
 
     D, wp = dtw(seq1, seq2, metric='euclidean')
     return D[-1, -1]
 
-def GetInc(i, j, X, Y):  # determines the next movement direction, row, column or both
-
+def GetInc(i, j, X, Y):  # determines the next movement direction, row, column, or both
     if i < c:  # Forces movement in both directions at the start
         return "Both"
 
@@ -75,19 +74,23 @@ def GetInc(i, j, X, Y):  # determines the next movement direction, row, column o
     path_costs = {}
 
     for m in range(1, min(c, i, j)):  # Ensure within bounds
-        # Looks back into the last c entries to find optimal path
-        path_costs[(i, j - m)] = EvaluatePathCost(i, j - m, X, Y)
-        path_costs[(i - m, j)] = EvaluatePathCost(i - m, j, X, Y)
+        path_costs[(i, j - m)] = EvaluatePathCost(i, j - m, X, Y)  # Column step
+        path_costs[(i - m, j)] = EvaluatePathCost(i - m, j, X, Y)  # Row step
+        path_costs[(i - m, j - m)] = EvaluatePathCost(i - m, j - m, X, Y)  # Diagonal step
 
     (x, y), _ = min(path_costs.items(), key=lambda item: item[1])  # Select minimum cost path
 
-    # Determines whether the lowest-cost movement is in time (Row), column (Column), or both.
-    if x < i:
-        return "Row"
-    elif y < j:
-        return "Column"
-    else:
+    # New comparison logic to allow for both to move
+    row_move = x < i
+    col_move = y < j
+
+    if row_move and col_move:
         return "Both"
+    elif row_move:
+        return "Row"
+    elif col_move:
+        return "Column"
+
 
 ''' Actual microphone recording - replaced with distorted test audio for the time being
 # Start the audio stream
@@ -107,12 +110,12 @@ with sd.InputStream(callback=audio_callback, samplerate=sr, channels=1, blocksiz
 
                 # Find appropriate increase direction, and increase the counter variable for that direction (i or j)
                 direction = GetInc(i, j, X, Y)
-
-                if GetInc(i, j, X, Y) == previous:
+        
+                if direction == previous:
                     runCount += 1
                 else:
                     runCount = 1
-                    previous = GetInc(i, j, X, Y)
+                    previous = direction
 
                 print(f"i: {i}, j: {j}, direction: {direction}, runCount: {runCount}")
 
@@ -172,11 +175,11 @@ for frame_start in range(0, len(test_audio_file), buffer_size):
         # Find appropriate increase direction, and increase the counter variable for that direction (i or j)
         direction = GetInc(i, j, X, Y)
 
-        if GetInc(i, j, X, Y) == previous:
+        if direction == previous:
             runCount += 1
         else:
             runCount = 1
-            previous = GetInc(i, j, X, Y)
+            previous = direction
 
         print(f"i: {i}, j: {j}, direction: {direction}, runCount: {runCount}")
 
