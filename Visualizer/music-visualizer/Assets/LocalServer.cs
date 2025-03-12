@@ -63,12 +63,29 @@ public class LocalServer : MonoBehaviour
 
         // Make sure we're not getting an empty string
         //dataReceived.Trim();
-        if (dataReceived != null && dataReceived != "")
+        if (!string.IsNullOrEmpty(dataReceived))
         {
-            // Convert the received string of data to the format we are using
-            chromaFeature = ParseChromaFeature(dataReceived);
-            Debug.Log(chromaFeature.ToString());
-            onChromaFeatureRecieved?.Invoke(chromaFeature); //Invokes the callback function to update the visualizer
+            Debug.Log($"Received: {dataReceived}");
+
+            if (dataReceived.StartsWith("C,"))
+            {
+                // Chroma feature message
+                chromaFeature = ParseChromaFeature(dataReceived.Substring(2)); // Remove "C," prefix
+                Debug.Log(chromaFeature.ToString());
+                onChromaFeatureRecieved?.Invoke(chromaFeature);
+            }
+            else if (dataReceived.StartsWith("O,"))
+            {
+                // Onset message
+                string[] onsetData = dataReceived.Substring(2).Split(',');
+                if (onsetData.Length == 1 && float.TryParse(onsetData[0], out float onsetStrength))
+                {
+                    Debug.Log($"Onset detected with strength: {onsetStrength}");
+                    // TODO: do something with the onset data
+                }
+            }
+
+            // Send back acknowledgment
             nwStream.Write(buffer, 0, bytesRead);
         }
     }

@@ -39,21 +39,29 @@ with sd.InputStream(callback=audio_callback, samplerate=sr, channels=1, blocksiz
             if not audio_queue.empty():
                 audio_chunk = audio_queue.get()
 
+                # Compute onset strength
+                onset_env = librosa.onset.onset_strength(y=audio_chunk, sr=sr, hop_length=hop_length)
+
+                # Get the maximum onset strength in the current chunk
+                max_onset_strength = onset_env.max()
+
+                # Check if onset strength exceeds a threshold
+                if max_onset_strength > 0.3:  # arbitrarily set threshold, we'll need to test to adjust this
+                    onset_message = f"O,{round(max_onset_strength, 3)}"
+                    print(f"Onset detected: {onset_message}")
+                    Client.send_data(onset_message)
+
                 # Compute chroma features (needs to be done on main thread)
                 chroma = librosa.feature.chroma_stft(y=audio_chunk, sr=sr, n_fft=n_fft, hop_length=hop_length)
 
                 chroma_list = np.round(chroma.mean(axis=1), 3)
-                data = ""
-                for i in range(len(chroma_list)):
-                    if i > 0:
-                        data += ","
-                    data += str(chroma_list[i])
+                chroma_message = "C," + ",".join(map(str, chroma_list))
 
                 # Print chroma feature values
                 print("Chroma Features:")
                 # print(np.round(chroma.mean(axis=1), 3))  # Print averaged chroma per pitch class
-                print(data)
-                Client.send_data(data)
+                print(chroma_message)
+                Client.send_data(chroma_message)
                 print("-" * 50)
 
     except KeyboardInterrupt:
