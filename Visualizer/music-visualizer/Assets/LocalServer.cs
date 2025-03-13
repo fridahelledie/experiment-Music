@@ -20,6 +20,10 @@ public class LocalServer : MonoBehaviour
     public delegate void ChromaFeatureRecieved(ChromaFeature chromaFeature);
     public static ChromaFeatureRecieved onChromaFeatureRecieved;
 
+    //delegates with onset
+    public delegatevoid OnsetFeaturesRecieved(float onsetStrenght);
+    public static OnsetFeatureRecieved OnsetFeatureRecieved;
+
     void Start()
     {
         // Receive on a separate thread so Unity doesn't freeze waiting for data
@@ -81,7 +85,7 @@ public class LocalServer : MonoBehaviour
                 if (onsetData.Length == 1 && float.TryParse(onsetData[0], out float onsetStrength))
                 {
                     Debug.Log($"Onset detected with strength: {onsetStrength}");
-                    // TODO: do something with the onset data
+                    OnsetFeatureRecieved?.invoke(onsetStrength);
                 }
             }
 
