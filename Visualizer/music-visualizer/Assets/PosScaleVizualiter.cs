@@ -74,7 +74,7 @@ public class PosScaleVizualiter : FeatureVisualizer
             }
             else
             {
-                rendr.material.Lerp(colorMaterial, blackMaterial, value);
+                rendr.material.Lerp( blackMaterial, colorMaterial, value);
             }
         }
     }
