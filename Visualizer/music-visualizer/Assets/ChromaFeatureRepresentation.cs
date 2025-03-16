@@ -17,19 +17,8 @@ public class ChromaFeatureRepresentation : MonoBehaviour
     [SerializeField] FeatureVisualizer G;
     [SerializeField] FeatureVisualizer G_sharp;
 
-    [SerializeField] FeatureVisualizer Aonset;
-    [SerializeField] FeatureVisualizer A_sharponset;
-    [SerializeField] FeatureVisualizer Bonset;
-    [SerializeField] FeatureVisualizer Conset;
-    [SerializeField] FeatureVisualizer C_sharponset;
-    [SerializeField] FeatureVisualizer Donset;
-    [SerializeField] FeatureVisualizer D_sharponset;
-    [SerializeField] FeatureVisualizer Eonset;
-    [SerializeField] FeatureVisualizer Fonset;
-    [SerializeField] FeatureVisualizer F_sharponset;
-    [SerializeField] FeatureVisualizer Gonset;
-    [SerializeField] FeatureVisualizer G_sharponset;
-
+    [SerializeField] FeatureVisualizer Onset;  
+    
     private void Start()
     {
         LocalServer.onChromaFeatureRecieved += ChromaFeatureRecieved;
@@ -101,64 +90,12 @@ public class ChromaFeatureRepresentation : MonoBehaviour
 
     void OnsetFeatureRecieved(OnsetFeatures onsetStrenght)
     {
-        if (Aonset != null)
+        
+        if (Onset != null)
         {
-            Aonset.UpdateFeature(onsetStrenght.Aonset);
+            Onset.UpdateFeature(onsetStrenght.Strenght);  
         }
 
-        if (A_sharponset != null)
-        {
-            A_sharponset.UpdateFeature(onsetStrenght.A_sharponset);
-        }
-
-        if (Bonset != null)
-        {
-            Bonset.UpdateFeature(onsetStrenght.Bonset);
-        }
-
-        if (Conset != null)
-        {
-            Conset.UpdateFeature(onsetStrenght.Conset);
-        }
-
-        if (C_sharponset != null)
-        {
-            C_sharponset.UpdateFeature(onsetStrenght.C_sharponset);
-        }
-
-        if (Donset != null)
-        {
-            Donset.UpdateFeature(onsetStrenght.Donset);
-        }
-
-        if (D_sharponset != null)
-        {
-            D_sharponset.UpdateFeature(onsetStrenght.D_sharponset);
-        }
-
-        if (Eonset != null)
-        {
-            Eonset.UpdateFeature(onsetStrenght.Eonset);
-        }
-
-        if (Fonset != null)
-        {
-            Fonset.UpdateFeature(onsetStrenght.Fonset);
-        }
-
-        if (F_sharponset != null)
-        {
-            F_sharponset.UpdateFeature(onsetStrenght.F_sharponset);
-        }
-
-        if (Gonset != null)
-        {
-            Gonset.UpdateFeature(onsetStrenght.Gonset);
-        }
-
-        if (G_sharponset != null)
-        {
-            G_sharponset.UpdateFeature(onsetStrenght.G_sharponset);
-        }
+        
     }
 }

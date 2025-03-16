@@ -51,7 +51,9 @@ public class PositionFeatureVisualizer : FeatureVisualizer
             else
             {
                 rendr.material.Lerp(colorMaterial, blackMaterial, value);
+                //rendr.material.color = Color.Lerp(blackMaterial.color, colorMaterial.color, (value - 0.65f) / (1 - 0.65f));
             }
+        
         }
     }
 }
