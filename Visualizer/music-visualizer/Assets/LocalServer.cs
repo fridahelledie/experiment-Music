@@ -3,6 +3,7 @@ using System.Net.Sockets;
 using System.Text;
 using UnityEngine;
 using System.Threading;
+using System.Globalization;
 
 public class LocalServer : MonoBehaviour
 {
@@ -16,13 +17,16 @@ public class LocalServer : MonoBehaviour
     Vector3 position = Vector3.zero;
     ChromaFeature chromaFeature = ChromaFeature.zero();
 
+    Vector3 positionOnset = Vector3.zero;
+    OnsetFeatures onsetfeature = OnsetFeatures.zero();
+
     //Delegates
     public delegate void ChromaFeatureRecieved(ChromaFeature chromaFeature);
     public static ChromaFeatureRecieved onChromaFeatureRecieved;
 
     //delegates with onset
-    public delegatevoid OnsetFeaturesRecieved(float onsetStrenght);
-    public static OnsetFeatureRecieved OnsetFeatureRecieved;
+    public delegate void OnsetFeaturesRecieved(OnsetFeatures onsetFeatures);
+    public static OnsetFeaturesRecieved OnsetFeatureRecieved;
 
     void Start()
     {
@@ -80,13 +84,9 @@ public class LocalServer : MonoBehaviour
             }
             else if (dataReceived.StartsWith("O,"))
             {
-                // Onset message
-                string[] onsetData = dataReceived.Substring(2).Split(',');
-                if (onsetData.Length == 1 && float.TryParse(onsetData[0], out float onsetStrength))
-                {
-                    Debug.Log($"Onset detected with strength: {onsetStrength}");
-                    OnsetFeatureRecieved?.invoke(onsetStrength);
-                }
+                OnsetFeatures onsetFeature = ParseConsetFeatures(dataReceived.Substring(2)); // Remove "O," prefix
+                Debug.Log(onsetFeature.ToString());
+                OnsetFeatureRecieved?.Invoke(onsetFeature);
             }
 
             // Send back acknowledgment
@@ -109,19 +109,47 @@ public class LocalServer : MonoBehaviour
 
         // Store as a Vector3
         ChromaFeature chromaFeature = new ChromaFeature(
-            float.Parse(stringArray[0]),
-            float.Parse(stringArray[1]),
-            float.Parse(stringArray[2]),
-            float.Parse(stringArray[3]),
-            float.Parse(stringArray[4]),
-            float.Parse(stringArray[5]),
-            float.Parse(stringArray[6]),
-            float.Parse(stringArray[7]),
-            float.Parse(stringArray[8]),
-            float.Parse(stringArray[9]),
-            float.Parse(stringArray[10]),
-            float.Parse(stringArray[11]));
+            float.Parse(stringArray[0], CultureInfo.InvariantCulture),
+            float.Parse(stringArray[1], CultureInfo.InvariantCulture),
+            float.Parse(stringArray[2], CultureInfo.InvariantCulture),
+            float.Parse(stringArray[3], CultureInfo.InvariantCulture),
+            float.Parse(stringArray[4], CultureInfo.InvariantCulture),
+            float.Parse(stringArray[5], CultureInfo.InvariantCulture),
+            float.Parse(stringArray[6], CultureInfo.InvariantCulture),
+            float.Parse(stringArray[7], CultureInfo.InvariantCulture),
+            float.Parse(stringArray[8], CultureInfo.InvariantCulture),
+            float.Parse(stringArray[9], CultureInfo.InvariantCulture),
+            float.Parse(stringArray[10], CultureInfo.InvariantCulture),
+            float.Parse(stringArray[11], CultureInfo.InvariantCulture));
 
         return chromaFeature;
+    }
+
+    public static OnsetFeatures ParseConsetFeatures(string dataString)
+    {
+        Debug.Log(dataString);
+        if (dataString.StartsWith("(") && dataString.EndsWith(")"))
+        {
+            dataString = dataString.Substring(1, dataString.Length - 2);
+        }
+
+        string[] stringArray = dataString.Split(',');
+
+        OnsetFeatures onsetFeatures = new OnsetFeatures(
+            float.Parse(stringArray[0], CultureInfo.InvariantCulture),
+            float.Parse(stringArray[1], CultureInfo.InvariantCulture),
+            float.Parse(stringArray[2], CultureInfo.InvariantCulture),
+            float.Parse(stringArray[3], CultureInfo.InvariantCulture),
+            float.Parse(stringArray[4], CultureInfo.InvariantCulture),
+            float.Parse(stringArray[5], CultureInfo.InvariantCulture),
+            float.Parse(stringArray[6], CultureInfo.InvariantCulture),
+            float.Parse(stringArray[7], CultureInfo.InvariantCulture),
+            float.Parse(stringArray[8], CultureInfo.InvariantCulture),
+            float.Parse(stringArray[9], CultureInfo.InvariantCulture),
+            float.Parse(stringArray[10], CultureInfo.InvariantCulture),
+            float.Parse(stringArray[11], CultureInfo.InvariantCulture)
+        );
+
+        return onsetFeatures;  
     }
 }
