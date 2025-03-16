@@ -68,7 +68,7 @@ public class PosScaleVizualiter : FeatureVisualizer
     {
         if (rendr != null)
         {
-            if (value <= 0.1f)
+            if (value >= 0.4)
             {
                 rendr.material = blackMaterial;
             }
