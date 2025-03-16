@@ -56,7 +56,7 @@ public class PosScaleVizualiter : FeatureVisualizer
         {
             transform.position = Vector3.Lerp(transform.position, targetPosition, lerpSpeed * Time.deltaTime);
         }
-        else if (featureType == FeatureType.Scale)
+        if (featureType == FeatureType.Scale)
         {
             transform.localScale = Vector3.Lerp(transform.localScale, targetScale, lerpSpeed * Time.deltaTime);
         }
