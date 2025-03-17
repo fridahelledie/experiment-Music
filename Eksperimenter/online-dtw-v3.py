@@ -14,7 +14,7 @@ P = []  # alignment path
 previous = None  # stores the last movement direction
 runCount = 1  # prevent excessive movement in the same direction
 MaxRunCount = 100  # Limit on how many consecutive movements in the same direction are allowed.
-c = 10  # Warping constraint, defining the alignment window.
+c = 20  # Warping constraint, defining the alignment window.
 i = 1
 j = 1
 
@@ -58,6 +58,7 @@ def EvaluatePathCost(i, j, X, Y):
     seq2 = Y[:, max(0, j - (c // 2)):j]
 
     D, wp = dtw(seq1, seq2, metric='euclidean')
+    # print(D)
     return D[-1, -1]
 
 def GetInc(i, j, X, Y):  # determines the next movement direction, row, column, or both
@@ -145,7 +146,7 @@ with sd.InputStream(callback=audio_callback, samplerate=sr, channels=1, blocksiz
         plt.show()
 '''
 
-test_audio_path = "warped_audio.wav"
+test_audio_path = "audio_file.wav"
 test_audio_file = sf.SoundFile(test_audio_path)
 
 # Simulated live input loop
@@ -196,7 +197,17 @@ for frame_start in range(0, len(test_audio_file), buffer_size):
 
 P = np.array(P)  # Convert to NumPy array so it can be made into a figure
 
+# Compute chroma features for x
+X_chroma = librosa.feature.chroma_stft(y=y, sr=sr)  # list of fixed features
+
+D, wp = dtw(X_chroma, Y, metric='euclidean')
+print(D.shape)
+
+print(P.shape)
+print(P)
+
 plt.figure(figsize=(8, 6))
+plt.imshow(D, cmap='hot')
 plt.plot(P[:, 1], P[:, 0], marker="o", linestyle="-", markersize=3)  # j vs i
 plt.xlabel("Reference Audio (j)")
 plt.ylabel("Live Audio (i)")
