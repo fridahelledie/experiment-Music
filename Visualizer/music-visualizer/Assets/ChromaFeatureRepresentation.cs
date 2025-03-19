@@ -32,8 +32,10 @@ public class ChromaFeatureRepresentation : MonoBehaviour
 
     private void Start()
     {
-        LocalServer.onChromaFeatureRecieved += ChromaFeatureRecieved;
-        LocalServer.OnsetFeatureRecieved += OnsetFeatureRecieved;
+        //LocalServer.onChromaFeatureRecieved += ChromaFeatureRecieved;
+        //LocalServer.OnsetFeatureRecieved += OnsetFeatureRecieved;
+        FeaturePlayback.onChromaFeatureRecieved += ChromaFeatureRecieved;
+        FeaturePlayback.OnsetFeatureRecieved += OnsetFeatureRecieved;
     }
 
     void ChromaFeatureRecieved(ChromaFeature chromaFeature)
