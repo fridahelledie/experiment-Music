@@ -14,7 +14,7 @@ P = []  # alignment path
 previous = None  # stores the last movement direction
 runCount = 1  # prevent excessive movement in the same direction
 MaxRunCount = 100  # Limit on how many consecutive movements in the same direction are allowed.
-c = 20  # Warping constraint, defining the alignment window.
+c = 10  # Warping constraint, defining the alignment window.
 i = 1
 j = 1
 
