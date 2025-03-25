@@ -30,12 +30,17 @@ public class ChromaFeatureRepresentation : MonoBehaviour
     [SerializeField] FeatureVisualizer OnsetG;
     [SerializeField] FeatureVisualizer OnsetG1;
 
+    [SerializeField] FeatureVisualizer Amplitude;
+
+
     private void Start()
     {
         //LocalServer.onChromaFeatureRecieved += ChromaFeatureRecieved;
         //LocalServer.OnsetFeatureRecieved += OnsetFeatureRecieved;
         FeaturePlayback.onChromaFeatureRecieved += ChromaFeatureRecieved;
         FeaturePlayback.OnsetFeatureRecieved += OnsetFeatureRecieved;
+        FeaturePlayback.AmplitudeFeatureRecieved += AmplitudeFeatureReceived;
+
     }
 
     void ChromaFeatureRecieved(ChromaFeature chromaFeature)
@@ -154,5 +159,12 @@ public class ChromaFeatureRepresentation : MonoBehaviour
         }
 
 
+    }
+    void AmplitudeFeatureReceived(AmplitudeFeature amplitude)
+    {
+        if (Amplitude != null)
+        {
+            Amplitude.UpdateFeature(amplitude.Strenght);
+        }
     }
 }

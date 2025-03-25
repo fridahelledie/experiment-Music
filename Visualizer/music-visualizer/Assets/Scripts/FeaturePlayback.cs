@@ -15,11 +15,15 @@ public class FeaturePlayback : MonoBehaviour
     public delegate void OnsetFeaturesRecieved(OnsetFeatures onsetFeatures);
     public static OnsetFeaturesRecieved OnsetFeatureRecieved;
 
+    public delegate void AmplitudeFeaturesRecieved(AmplitudeFeature amplitudeFeature);
+    public static AmplitudeFeaturesRecieved AmplitudeFeatureRecieved;
+
     [System.Serializable] // matches the data structure of the saves json files
     public class FeatureEntry
     {
         public float timestamp;
         public float onset;
+        public float amplitude;
         public float[] chroma;
     }
 
@@ -54,7 +58,7 @@ public class FeaturePlayback : MonoBehaviour
             float waitTime = entry.timestamp - (Time.time - startTime);
             if (waitTime > 0) yield return new WaitForSeconds(waitTime);
 
-            // Convert json data to ChromaFeature and OnsetFeatures objects
+            // Convert json data to the different feature objects
             ChromaFeature chromaFeature = new ChromaFeature(
                 entry.chroma[0], entry.chroma[1], entry.chroma[2], entry.chroma[3], entry.chroma[4],
                 entry.chroma[5], entry.chroma[6], entry.chroma[7], entry.chroma[8], entry.chroma[9],
@@ -63,9 +67,12 @@ public class FeaturePlayback : MonoBehaviour
 
             OnsetFeatures onsetFeature = new OnsetFeatures(entry.onset);
 
+            AmplitudeFeature amplitudeFeature = new AmplitudeFeature(entry.amplitude);
+
             // Call delegate functions
             onChromaFeatureRecieved?.Invoke(chromaFeature);
             if (entry.onset > 0.3f) OnsetFeatureRecieved?.Invoke(onsetFeature); // Have to use same threshold as python to prevent invoking function with null data
+            AmplitudeFeatureRecieved?.Invoke(amplitudeFeature);
         }
     }
 }
