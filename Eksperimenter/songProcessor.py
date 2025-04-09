@@ -22,6 +22,10 @@ y, sr = librosa.load(audio_path, sr=sr)
 # Compute amplitude envelope for the entire audio
 AE_audio = amplitude_envelope(y, buffer_size, hop_length)
 
+#Compute beats
+tempo, beat_frames = librosa.beat.beat_track(y=y, sr=sr, hop_length=hop_length)
+beat_times = librosa.frames_to_time(beat_frames, sr=sr, hop_length=hop_length)
+
 # Initialize feature storage
 feature_data = []
 num_chunks = len(y) // buffer_size
@@ -49,7 +53,11 @@ for i in range(num_chunks):
         "onset": round(max_onset_strength, 3),
         "amplitude": amplitude_value,
         "chroma": chroma_list,
+        "tempo": round(tempo.item(), 3),
+        "beat_times": [round(bt, 3) for bt in beat_times],
     })
+
+
 
 # Save features to a JSON file
 with open("audio_features.json", "w") as f:
