@@ -21,7 +21,7 @@ y, sr = librosa.load(reference_audio_path, sr=None)
 Y_chroma = librosa.feature.chroma_stft(y=y, sr=sr, n_fft=n_fft, hop_length=hop_length)
 
 #Input audio
-input_audio_path = "audio_file.wav"
+input_audio_path = "audio_file_slowed.wav"
 audio_queue = queue.Queue()
 X_chroma = np.empty(shape=(Y_chroma.shape[0], 0))
 
@@ -179,6 +179,8 @@ def calculate_segment_end(D):
                           (i_current + 1, j_current + 1): D[i_current + 1, j_current + 1]}
 
         end_point, _ = min(possible_points.items(), key=lambda item: item[1])
+        i_current, j_current = end_point
+        print(f"i:{i_current}, j:{j_current}")
 
     return end_point
 
