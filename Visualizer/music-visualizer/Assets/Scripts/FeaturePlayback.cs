@@ -18,8 +18,8 @@ public class FeaturePlayback : MonoBehaviour
     public delegate void AmplitudeFeaturesRecieved(AmplitudeFeature amplitudeFeature);
     public static AmplitudeFeaturesRecieved AmplitudeFeatureRecieved;
 
-    public delegate void BeatFeatureRecieved(BeatFeature beatFeature);
-    public static BeatFeatureRecieved BeatFeatureRecieved;
+    public delegate void BeatDetected(); 
+    public static BeatDetected OnBeatDetected;
 
     [System.Serializable] // matches the data structure of the saves json files
     public class FeatureEntry
@@ -28,8 +28,7 @@ public class FeaturePlayback : MonoBehaviour
         public float onset;
         public float amplitude;
         public float[] chroma;
-        public float tempo;
-        public List<float> beat_times;
+        public float? beat_times; //nullable because of python output
         
     }
 
@@ -76,16 +75,28 @@ public class FeaturePlayback : MonoBehaviour
 
             AmplitudeFeature amplitudeFeature = new AmplitudeFeature(entry.amplitude);
 
-            
-            BeatFeature beatFeature = new BeatFeature(entry.tempo, entry.beat_times);
-                
+
+            if (IsBeatDetected(entry.beat_times))
+            {
+                Debug.Log("Beat detected at: " + entry.timestamp);
+                OnBeatDetected?.Invoke();  // Trigger beat event
+            }
+
 
             // Call delegate functions
             onChromaFeatureRecieved?.Invoke(chromaFeature);
             if (entry.onset > 0.3f) OnsetFeatureRecieved?.Invoke(onsetFeature); // Have to use same threshold as python to prevent invoking function with null data
             AmplitudeFeatureRecieved?.Invoke(amplitudeFeature);
 
-            BeatFeatureRecieved?.Invoke(beatFeature);
         }
+
+    }
+    bool IsBeatDetected(float? beatTime) // Beat time is either a float or nullable
+    {
+        if (beatTime.HasValue) // If its a float then return true
+        {
+            return true;  
+        }
+        return false;
     }
 }

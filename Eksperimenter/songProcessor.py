@@ -56,7 +56,7 @@ for i in range(num_chunks):
         "amplitude": amplitude_value,
         "chroma": chroma_list,
         #"tempo": round(tempo.item(), 3),
-        "beat_times": [round(bt, 3) for bt in current_beat_times],
+        "beat_times": round(current_beat_times[0], 3) if len(current_beat_times) == 1 else (current_beat_times if len(current_beat_times) > 1 else None),
     })
 
 

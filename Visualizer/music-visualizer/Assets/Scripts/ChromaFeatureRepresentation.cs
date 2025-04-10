@@ -32,7 +32,8 @@ public class ChromaFeatureRepresentation : MonoBehaviour
 
     [SerializeField] FeatureVisualizer Amplitude;
 
-    [SerializeField] FeatureVisualizer Beat;
+    
+    [SerializeField] BeatVisualzer beatVisualizer;
 
 
     private void Start()
@@ -42,7 +43,9 @@ public class ChromaFeatureRepresentation : MonoBehaviour
         FeaturePlayback.onChromaFeatureRecieved += ChromaFeatureRecieved;
         FeaturePlayback.OnsetFeatureRecieved += OnsetFeatureRecieved;
         FeaturePlayback.AmplitudeFeatureRecieved += AmplitudeFeatureReceived;
-        FeaturePlayback.BeatFeatureRecieved += BeatFeatureRecieved;
+        FeaturePlayback.OnBeatDetected += BeatDetected;
+
+
 
     }
 
@@ -170,12 +173,13 @@ public class ChromaFeatureRepresentation : MonoBehaviour
             Amplitude.UpdateFeature(amplitude.Strenght);
         }
     }
-
-    void BeatsReceived(AmplitudeFeature amplitude)
+    void BeatDetected()
     {
-        if (Beat != null)
+        Debug.Log("Beat detected!"); // Debug log to confirm the event is triggered
+
+        if (beatVisualizer != null)
         {
-            Beat.UpdateFeature(Beats.Strenght);
+            beatVisualizer.TriggerBeatEffect();
         }
     }
 }

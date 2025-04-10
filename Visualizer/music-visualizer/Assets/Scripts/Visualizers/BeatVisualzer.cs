@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class BeatVisualzer : MonoBehaviour
 {
-    // Start is called before the first frame update
+   
+    public float rotationAngle = 90f; // Rotate 90 each beat
     void Start()
     {
-        
+        // Subscribe to the OnBeatDetected event
+        FeaturePlayback.OnBeatDetected += TriggerBeatEffect;
     }
 
-    // Update is called once per frame
-    void Update()
+
+    public void TriggerBeatEffect()
     {
-        
+        // Debug log to confirm if the method is called
+        Debug.Log("Beat found yay");
+
+        // Instantly rotate the object by the specified angle around the Y axis
+        transform.Rotate(0, rotationAngle, 0);
     }
 }
