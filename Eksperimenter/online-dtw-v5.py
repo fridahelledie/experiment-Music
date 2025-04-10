@@ -131,7 +131,7 @@ def calculate_path_segment(D, i, j):
         #Add step to path
         path_points.append((step[0], step[1]))
 
-        #update current path possition
+        #update current path position
         i_current = step[0]
         j_current = step[1]
 
