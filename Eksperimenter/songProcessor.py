@@ -47,14 +47,16 @@ for i in range(num_chunks):
     # Retrieve amplitude envelope value for this chunk
     amplitude_value = float(AE_audio[i]) if i < len(AE_audio) else 0.0
 
+    current_beat_times = [bt for bt in beat_times if start / sr <= bt < end / sr]
+
     # Store the feature with a timestamp
     feature_data.append({
         "timestamp": round(start / sr, 3),
         "onset": round(max_onset_strength, 3),
         "amplitude": amplitude_value,
         "chroma": chroma_list,
-        "tempo": round(tempo.item(), 3),
-        "beat_times": [round(bt, 3) for bt in beat_times],
+        #"tempo": round(tempo.item(), 3),
+        "beat_times": [round(bt, 3) for bt in current_beat_times],
     })
 
 

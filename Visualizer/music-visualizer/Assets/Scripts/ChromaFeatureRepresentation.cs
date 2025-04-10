@@ -32,6 +32,8 @@ public class ChromaFeatureRepresentation : MonoBehaviour
 
     [SerializeField] FeatureVisualizer Amplitude;
 
+    [SerializeField] FeatureVisualizer Beat;
+
 
     private void Start()
     {
@@ -40,6 +42,7 @@ public class ChromaFeatureRepresentation : MonoBehaviour
         FeaturePlayback.onChromaFeatureRecieved += ChromaFeatureRecieved;
         FeaturePlayback.OnsetFeatureRecieved += OnsetFeatureRecieved;
         FeaturePlayback.AmplitudeFeatureRecieved += AmplitudeFeatureReceived;
+        FeaturePlayback.BeatFeatureRecieved += BeatFeatureRecieved;
 
     }
 
@@ -165,6 +168,14 @@ public class ChromaFeatureRepresentation : MonoBehaviour
         if (Amplitude != null)
         {
             Amplitude.UpdateFeature(amplitude.Strenght);
+        }
+    }
+
+    void BeatsReceived(AmplitudeFeature amplitude)
+    {
+        if (Beat != null)
+        {
+            Beat.UpdateFeature(Beats.Strenght);
         }
     }
 }

@@ -18,6 +18,9 @@ public class FeaturePlayback : MonoBehaviour
     public delegate void AmplitudeFeaturesRecieved(AmplitudeFeature amplitudeFeature);
     public static AmplitudeFeaturesRecieved AmplitudeFeatureRecieved;
 
+    public delegate void BeatFeatureRecieved(BeatFeature beatFeature);
+    public static BeatFeatureRecieved BeatFeatureRecieved;
+
     [System.Serializable] // matches the data structure of the saves json files
     public class FeatureEntry
     {
@@ -25,7 +28,11 @@ public class FeaturePlayback : MonoBehaviour
         public float onset;
         public float amplitude;
         public float[] chroma;
+        public float tempo;
+        public List<float> beat_times;
+        
     }
+
 
     void Start()
     {
@@ -69,10 +76,16 @@ public class FeaturePlayback : MonoBehaviour
 
             AmplitudeFeature amplitudeFeature = new AmplitudeFeature(entry.amplitude);
 
+            
+            BeatFeature beatFeature = new BeatFeature(entry.tempo, entry.beat_times);
+                
+
             // Call delegate functions
             onChromaFeatureRecieved?.Invoke(chromaFeature);
             if (entry.onset > 0.3f) OnsetFeatureRecieved?.Invoke(onsetFeature); // Have to use same threshold as python to prevent invoking function with null data
             AmplitudeFeatureRecieved?.Invoke(amplitudeFeature);
+
+            BeatFeatureRecieved?.Invoke(beatFeature);
         }
     }
 }

@@ -51,7 +51,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1744110952318</updated>
-      <workItem from="1744110955044" duration="13150000" />
+      <workItem from="1744110955044" duration="15579000" />
     </task>
     <servers />
   </component>
@@ -61,6 +61,6 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/experiment_Music$Client.coverage" NAME="Client Coverage Results" MODIFIED="1741770542895" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Eksperimenter" />
     <SUITE FILE_PATH="coverage/experiment_Music$RealtimeChromaFeatureExtractor.coverage" NAME="RealtimeChromaFeatureExtractor Coverage Results" MODIFIED="1744127332198" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Eksperimenter" />
-    <SUITE FILE_PATH="coverage/experiment_Music$songProcessor.coverage" NAME="songProcessor Coverage Results" MODIFIED="1744199411814" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Eksperimenter" />
+    <SUITE FILE_PATH="coverage/experiment_Music$songProcessor.coverage" NAME="songProcessor Coverage Results" MODIFIED="1744206004707" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Eksperimenter" />
   </component>
 </project>
