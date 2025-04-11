@@ -76,9 +76,9 @@ public class FeaturePlayback : MonoBehaviour
             AmplitudeFeature amplitudeFeature = new AmplitudeFeature(entry.amplitude);
 
 
-            if (IsBeatDetected(entry.beat_times))
+            if (IsBeatDetected(entry.beat_times)) // Check if true then excecute code inside
             {
-                Debug.Log("Beat detected at: " + entry.timestamp);
+                Debug.Log("Beat detected"); //pls work
                 OnBeatDetected?.Invoke();  // Trigger beat event
             }
 

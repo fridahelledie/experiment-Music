@@ -5,7 +5,7 @@ using UnityEngine;
 public class BeatVisualzer : MonoBehaviour
 {
    
-    public float rotationAngle = 90f; // Rotate 90 each beat
+    public float rotationAngle = 45f; // Rotate 90 each beat
     void Start()
     {
         // Subscribe to the OnBeatDetected event
@@ -19,6 +19,6 @@ public class BeatVisualzer : MonoBehaviour
         Debug.Log("Beat found yay");
 
         // Instantly rotate the object by the specified angle around the Y axis
-        transform.Rotate(0, rotationAngle, 0);
+        transform.Rotate(0, 0, rotationAngle);
     }
 }
