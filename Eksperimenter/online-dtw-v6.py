@@ -2,7 +2,6 @@ import librosa
 import numpy as np
 import queue
 
-import soundfile
 from librosa.sequence import dtw
 import matplotlib.pyplot as plt
 import soundfile as sf
@@ -35,7 +34,7 @@ input_audio_path = "audio_file_slowed.wav"
 
 def show_dtw(D, P, c=c):
     plt.figure(figsize=(8, 6))
-    plt.imshow(D, cmap='hot')
+    plt.imshow(D, cmap='hot', origin='lower')
     plt.plot(P[:, 1], P[:, 0], marker="o", linestyle="-", markersize=3)
     plt.xlabel("Reference Audio (j)")
     plt.ylabel("Live Audio (t)")
@@ -86,17 +85,22 @@ def show_colored_path(D, P):
 
 def online_tw(live_features, ref_features, _D, _P, _t, _j):
     global previous, runCount
-    # D = np.append(_D, np.full(shape=(max(0, live_features.shape[1] - _D.shape[0]) , _D.shape[1]), fill_value=np.inf), axis=0)
-    new_rows = live_features.shape[1]
-    D = np.vstack([_D, np.full((new_rows, _D.shape[1]), np.inf)])
+    D = np.append(_D, np.full(shape=(max(0, live_features.shape[1] - _D.shape[0]) , _D.shape[1]), fill_value=np.inf), axis=0)
+    # new_rows = live_features.shape[1]
+    # D = np.vstack([_D, np.full((new_rows, _D.shape[1]), np.inf)])
     # D.resize((live_features.shape[0], _D.shape[1]))
     P = _P
     t = _t
     j = _j
 
-    print(f"Initial D shape: {D.shape}, P length: {len(P)}")
+    # print(f"Initial D shape: {D.shape}, P length: {len(P)}")
 
-    while t < live_features.shape[1] and j < ref_features.shape[1]:
+    #initialize new rows diagonal values (cost values)
+    if t == 0 and live_features.shape[1] > 0 and D.shape[0] > 0:
+        D[t, j] = EvaluatePathCost(t, j, live_features, ref_features, D)
+
+
+    while t < live_features.shape[1] - 1 and j < ref_features.shape[1]:
         #print(f"t: {t}, j: {j}, D.shape: {D.shape}, ")
         decision = GetInc(t, j, D)
         #print(f"Decision: {decision}")
@@ -117,10 +121,14 @@ def online_tw(live_features, ref_features, _D, _P, _t, _j):
                     #print(f"Updating D[{t}, {k}]")
                     D[k, j] = EvaluatePathCost(k, j, live_features, ref_features, D)
 
-        # if t < D.shape[0] and j < D.shape[1]:
-        #     D[t, j] = EvaluatePathCost(t, j, live, ref, D)
-        #print(f"Updated D: \n{D}")
-        print (previous, runCount)
+
+        #HOT FIX that makes sure that we never make an unnecessary column followed imidietly by a row or vice versa
+        if previous != decision and decision != "Both" and previous != None and previous != "Both":
+            print(f"{previous} {P[-1]} {decision}")
+            P.pop(-1)
+            previous = "Both"
+        #HOT FIX END
+
         if decision == previous:
             runCount += 1
         else:
@@ -129,9 +137,11 @@ def online_tw(live_features, ref_features, _D, _P, _t, _j):
         if decision != "Both":
             previous = decision
 
-        P.append((t, j))
 
-    return D, P, t, j
+        if t < D.shape[0] and j < D.shape[1]:
+            P.append((t, j))
+
+    return D, P
 
 def EvaluatePathCost(t, j, X, Y, D):
     distance = dtw.distance(X[:,t], Y[:,j])
@@ -189,7 +199,7 @@ def GetInc(t, j, D):
     return bestMove
 
 def simulate_live_audio_input(audio_path, buffer_size, ref):
-    live_audio, sr = librosa.load(input_audio_path, sr=None)
+    live_audio, sr_ = librosa.load(audio_path, sr=sr)
 
     #Declare variables
     live_chroma = np.empty(shape=(ref.shape[0], 0)) #Declares an empty array for keeping the chroma features as they are inputted
@@ -225,9 +235,11 @@ def simulate_live_audio_input(audio_path, buffer_size, ref):
         live_chroma = np.append(live_chroma, chroma, axis=1)
         # print(live_chroma.shape)
         #run online time warp
-        D, P, t, j, = online_tw(live_chroma, ref, D,P,t,j)
+        t, j = P[-1]
+        D, P = online_tw(live_chroma, ref, D,P,t,j)
 
     show_dtw(D, np.array(P))
+    print(f"{D.shape}, path end: {P[-1]}")
 
 
 def calculate_chroma_chunk(audio_chunk):
