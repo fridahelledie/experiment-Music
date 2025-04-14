@@ -1,6 +1,18 @@
 import librosa
 import json
 import numpy as np
+import sys
+import os
+
+# Check if the script received a filename
+if len(sys.argv) < 2:
+    print("Usage: python songProcessor.py <SelectedSong>")
+    sys.exit(1)
+
+# Get the song filename from arguments
+selected_song = sys.argv[1]
+audio_input_path = os.path.join("..", "Audio", selected_song)
+json_output_path = os.path.join("..", "jsonVisualizations", os.path.splitext(selected_song)[0] + ".json")
 
 # Audio settings
 sr = 22050  # Sampling rate
@@ -16,13 +28,16 @@ def amplitude_envelope(signal, frame_size, hop_length):
     return np.array(amplitude_envelope)
 
 # Load the audio file
-audio_path = "input_audio.wav"
-y, sr = librosa.load(audio_path, sr=sr)
+try:
+    y, sr = librosa.load(audio_input_path, sr=sr)
+except FileNotFoundError:
+    print(f"Audio file not found at {audio_input_path}")
+    sys.exit(1)
 
 # Compute amplitude envelope for the entire audio
 AE_audio = amplitude_envelope(y, buffer_size, hop_length)
 
-#Compute beats
+# Compute beats
 tempo, beat_frames = librosa.beat.beat_track(y=y, sr=sr, hop_length=hop_length)
 beat_times = librosa.frames_to_time(beat_frames, sr=sr, hop_length=hop_length)
 
@@ -55,14 +70,12 @@ for i in range(num_chunks):
         "onset": round(max_onset_strength, 3),
         "amplitude": amplitude_value,
         "chroma": chroma_list,
-        #"tempo": round(tempo.item(), 3),
         "beat_times": round(current_beat_times[0], 3) if len(current_beat_times) == 1 else (current_beat_times if len(current_beat_times) > 1 else None),
     })
 
-
-
 # Save features to a JSON file
-with open("audio_features.json", "w") as f:
+os.makedirs(os.path.dirname(json_output_path), exist_ok=True)
+with open(json_output_path, "w") as f:
     json.dump(feature_data, f, indent=4, default=lambda x: float(x))
 
-print("Feature extraction complete. Data saved to audio_features.json")
+print(f"Feature extraction complete. Data saved to {json_output_path}")
