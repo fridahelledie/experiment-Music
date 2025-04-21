@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
@@ -7,7 +6,7 @@ using Newtonsoft.Json;
 public class FeaturePlayback : MonoBehaviour
 {
     private List<FeatureEntry> featureData;
-    private float startTime;
+    private int lastStepIndex = -1;
 
     public delegate void ChromaFeatureRecieved(ChromaFeature chromaFeature);
     public static ChromaFeatureRecieved onChromaFeatureRecieved;
@@ -18,85 +17,76 @@ public class FeaturePlayback : MonoBehaviour
     public delegate void AmplitudeFeaturesRecieved(AmplitudeFeature amplitudeFeature);
     public static AmplitudeFeaturesRecieved AmplitudeFeatureRecieved;
 
-    public delegate void BeatDetected(); 
+    public delegate void BeatDetected();
     public static BeatDetected OnBeatDetected;
 
-    [System.Serializable] // matches the data structure of the saves json files
+    [System.Serializable]
     public class FeatureEntry
     {
         public float timestamp;
         public float onset;
         public float amplitude;
         public float[] chroma;
-        public float? beat_times; //nullable because of python output
-        
+        public float? beat_times;
     }
 
-
-    void Start()
+    // Called externally to start live-aligned visualization
+    public void StartLivePlayback(string songName)
     {
-        LoadFeatureData();
-        StartCoroutine(PlayFeatures());
-    }
-
-    void LoadFeatureData()
-    {
-        string filePath = Path.Combine(Application.streamingAssetsPath, "audio_features.json");
-        if (File.Exists(filePath))
+        string jsonPath = Path.Combine(Application.streamingAssetsPath, "jsonVisualizations", Path.ChangeExtension(songName, ".json"));
+        if (File.Exists(jsonPath))
         {
-            string json = File.ReadAllText(filePath);
+            string json = File.ReadAllText(jsonPath);
             featureData = JsonConvert.DeserializeObject<List<FeatureEntry>>(json);
-            Debug.Log("Feature data loaded.");
+            Debug.Log("Live feature data loaded.");
         }
         else
         {
-            Debug.LogError("Feature file not found!");
+            Debug.LogError("Feature JSON file not found for: " + songName);
+            return;
         }
+
+        // Register listener for Python alignment updates
+        playbackInitializer.instance.onPythonMessageReceived.AddListener(OnAlignmentStepReceived);
     }
 
-    IEnumerator PlayFeatures()
+    // Called each time OLTW-aligner sends a new alignment step
+    private void OnAlignmentStepReceived(string message)
     {
-        startTime = Time.time;
-
-        foreach (var entry in featureData)
+        if (float.TryParse(message, out float stepFloat))
         {
-            // Wait till timestamp of entry before processing data (We'll need to replace this with time stepping logic from OLTW algorithm)
-            float waitTime = entry.timestamp - (Time.time - startTime);
-            if (waitTime > 0) yield return new WaitForSeconds(waitTime);
-
-            // Convert json data to the different feature objects
-            ChromaFeature chromaFeature = new ChromaFeature(
-                entry.chroma[0], entry.chroma[1], entry.chroma[2], entry.chroma[3], entry.chroma[4],
-                entry.chroma[5], entry.chroma[6], entry.chroma[7], entry.chroma[8], entry.chroma[9],
-                entry.chroma[10], entry.chroma[11]
-            );
-
-            OnsetFeatures onsetFeature = new OnsetFeatures(entry.onset);
-
-            AmplitudeFeature amplitudeFeature = new AmplitudeFeature(entry.amplitude);
-
-
-            if (IsBeatDetected(entry.beat_times)) // Check if true then excecute code inside
+            int stepIndex = Mathf.FloorToInt(stepFloat);
+            if (stepIndex != lastStepIndex && stepIndex >= 0 && stepIndex < featureData.Count)
             {
-                Debug.Log("Beat detected"); //pls work
-                OnBeatDetected?.Invoke();  // Trigger beat event
+                lastStepIndex = stepIndex;
+                ApplyFeatureStep(featureData[stepIndex]);
             }
-
-
-            // Call delegate functions
-            onChromaFeatureRecieved?.Invoke(chromaFeature);
-            if (entry.onset > 0.3f) OnsetFeatureRecieved?.Invoke(onsetFeature); // Have to use same threshold as python to prevent invoking function with null data
-            AmplitudeFeatureRecieved?.Invoke(amplitudeFeature);
-
         }
-
     }
-    bool IsBeatDetected(float? beatTime) // Beat time is either a float or nullable
+
+    private void ApplyFeatureStep(FeatureEntry entry)
     {
-        if (beatTime.HasValue) // If its a float then return true
+        ChromaFeature chromaFeature = new ChromaFeature(
+            entry.chroma[0], entry.chroma[1], entry.chroma[2], entry.chroma[3], entry.chroma[4],
+            entry.chroma[5], entry.chroma[6], entry.chroma[7], entry.chroma[8], entry.chroma[9],
+            entry.chroma[10], entry.chroma[11]
+        );
+
+        OnsetFeatures onsetFeature = new OnsetFeatures(entry.onset);
+        AmplitudeFeature amplitudeFeature = new AmplitudeFeature(entry.amplitude);
+
+        if (IsBeatDetected(entry.beat_times))
         {
-            return true;  
+            OnBeatDetected?.Invoke();
         }
-        return false;
+
+        onChromaFeatureRecieved?.Invoke(chromaFeature);
+        if (entry.onset > 0.3f) OnsetFeatureRecieved?.Invoke(onsetFeature);
+        AmplitudeFeatureRecieved?.Invoke(amplitudeFeature);
+    }
+
+    private bool IsBeatDetected(float? beatTime)
+    {
+        return beatTime.HasValue;
     }
 }
