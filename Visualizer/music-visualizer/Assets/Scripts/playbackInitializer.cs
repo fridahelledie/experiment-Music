@@ -31,6 +31,7 @@ public class playbackInitializer : MonoBehaviour
     bool processingComplete = false;
 
     public string selectedSong = "None";
+    public string songFiletype = "None"; // we should probably automate this instead of having to manually type it
 
 
     private void Start()
@@ -74,11 +75,12 @@ public class playbackInitializer : MonoBehaviour
 
         if (generateVisualization)
         {
-            StartPythonProcess("songProcessor", selectedSong); //when json file with name of selected song not present
+            StartPythonProcess("songProcessor", selectedSong + ".mp3"); //when json file with name of selected song not present
         }
         else
         {
-            StartPythonProcess("OLTW-aligner", selectedSong);
+            FindObjectOfType<FeaturePlayback>().StartLivePlayback(selectedSong);
+            StartPythonProcess("OLTW-aligner", selectedSong + ".mp3");
             // Note for future: Start FeaturePlayback, reading the selectedSong and stepping visualization based on python messages sent by oltw script
         }
 
@@ -103,11 +105,13 @@ public class playbackInitializer : MonoBehaviour
                 if (sw.BaseStream.CanWrite)
                 {
                     string condaEnvName = "SoundProcessing";
-                    string pythonScriptPath = $"\"{Application.dataPath}/StreamingAssets/Python/{scriptName}.py\"";
+                    string pythonScriptPath = $"\"{Application.dataPath}/StreamingAssets/{scriptName}.py\"";
 
                     // Chain environment activation and script execution
                     sw.WriteLine($"call conda activate {condaEnvName} && python {pythonScriptPath} {songName}");
                     sw.WriteLine("exit"); // Exit cmd after running the command (unsure if this is necessary?)
+                    UnityEngine.Debug.Log("actually made the execution call");
+
                 }
             }
 
@@ -199,7 +203,8 @@ public class playbackInitializer : MonoBehaviour
     #endregion Python functions
     bool doesVisualizationExist(string fileName)
     {
-        string path = Path.Combine(Application.streamingAssetsPath, "jsonVisualizations/" + fileName);
+        string path = Path.Combine(Application.streamingAssetsPath, "jsonVisualizations", fileName + ".json");
+        print("looking for: " + path);
         return File.Exists(path);
     }
 }
