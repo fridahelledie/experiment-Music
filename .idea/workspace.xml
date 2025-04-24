@@ -4,20 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="335f97f5-27a3-420f-a13a-7d4cfa8ed7a9" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Eksperimenter/OLTW-aligner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Eksperimenter/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/Eksperimenter/.idea/.name" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scenes/VisualV2.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scenes/VisualV2.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/FeaturePlayback.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/FeaturePlayback.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/FeaturePlayback.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/FeaturePlayback.cs.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/playbackInitializer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/playbackInitializer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/StreamingAssets/Python.meta" beforeDir="false" />
-    </list>
+    <list default="true" id="335f97f5-27a3-420f-a13a-7d4cfa8ed7a9" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -35,25 +22,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.RealtimeChromaFeatureExtractor.executor&quot;: &quot;Run&quot;,
-    &quot;Python.songProcessor.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;restructuring&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.RealtimeChromaFeatureExtractor.executor": "Run",
+    "Python.songProcessor.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-fc1d50d2d915-aa17d162503b-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-243.24978.54" />
+        <option value="bundled-js-predefined-d6986cc7102b-7c0b70fcd90d-JavaScript-PY-242.21829.153" />
+        <option value="bundled-python-sdk-464836ebc622-b74155a9e76b-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.21829.153" />
       </set>
     </attachedChunks>
   </component>
@@ -66,6 +54,7 @@
       <option name="presentableId" value="Default" />
       <updated>1744110952318</updated>
       <workItem from="1744110955044" duration="19750000" />
+      <workItem from="1745476389896" duration="300000" />
     </task>
     <servers />
   </component>
