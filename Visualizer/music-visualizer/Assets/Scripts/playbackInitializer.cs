@@ -11,6 +11,7 @@ using UnityEditor.PackageManager;
 using UnityEngine;
 using System.Collections.Concurrent;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using System.Threading;
 
 public class playbackInitializer : MonoBehaviour
@@ -32,6 +33,7 @@ public class playbackInitializer : MonoBehaviour
 
     public string selectedSong = "None";
     public string songFiletype = "None"; // we should probably automate this instead of having to manually type it
+    bool readyToPlay = false;
 
 
     private void Start()
@@ -62,9 +64,16 @@ public class playbackInitializer : MonoBehaviour
             processingComplete = false;
             // Note for future: Add behaviour here for when playback is finished
         }
+        if (readyToPlay && Input.GetKeyDown(KeyCode.Space))     
+        {
+            readyToPlay = false;
+            SendToPython("START");
+        }
     }
     public void StartPlayback()
     {
+        SceneManager.LoadScene("FinalScene");
+        
         // Start the thread for receiving data
         ThreadStart ts = new ThreadStart(GetInfo);
         mThread = new Thread(ts);
@@ -145,6 +154,11 @@ public class playbackInitializer : MonoBehaviour
     {
         UnityEngine.Debug.Log($"Python Message: {message}");
         messageQueue.Enqueue(message); // Queue the message for processing on the main thread
+        if (message == "READY")
+        {
+            readyToPlay = true;
+        }
+
     }
     public void CancelProcessing()
     {
@@ -198,6 +212,24 @@ public class playbackInitializer : MonoBehaviour
             running = false;
         }
     }
+    void SendToPython(string message)
+    {
+        if (client != null && client.Connected)
+        {
+            try
+            {
+                NetworkStream nwStream = client.GetStream();
+                byte[] buffer = Encoding.UTF8.GetBytes(message);
+                nwStream.Write(buffer, 0, buffer.Length);
+                nwStream.Flush();
+            }
+            catch (Exception ex)
+            {
+                UnityEngine.Debug.LogError($"Error sending message to Python: {ex.Message}");
+            }
+        }
+    }
+
     #endregion Python functions
     bool doesVisualizationExist(string fileName)
     {
