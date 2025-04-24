@@ -9,7 +9,7 @@ import Client
 from dtaidistance import dtw
 
 # =============== CONFIG ===============
-USE_SIMULATED_INPUT = True  # Flip this to False to use real mic input
+USE_SIMULATED_INPUT = True  # Flip this to False  use real mic input
 BUFFER_SIZE = 4096
 N_FFT = 2048
 HOP_LENGTH = 512

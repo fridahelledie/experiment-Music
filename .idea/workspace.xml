@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="335f97f5-27a3-420f-a13a-7d4cfa8ed7a9" name="Changes" comment="" />
+    <list default="true" id="335f97f5-27a3-420f-a13a-7d4cfa8ed7a9" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Eksperimenter/OLTW-aligner.py" beforeDir="false" afterPath="$PROJECT_DIR$/Eksperimenter/OLTW-aligner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/FeaturePlayback.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/FeaturePlayback.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/ProgressBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/ProgressBar.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -24,12 +30,13 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Python.OLTW-aligner.executor": "Run",
     "Python.RealtimeChromaFeatureExtractor.executor": "Run",
     "Python.songProcessor.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "Progress__bar",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
@@ -55,6 +62,7 @@
       <updated>1744110952318</updated>
       <workItem from="1744110955044" duration="19750000" />
       <workItem from="1745476389896" duration="300000" />
+      <workItem from="1745509317839" duration="3054000" />
     </task>
     <servers />
   </component>
@@ -62,8 +70,11 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/OLTW_aligner_py$songProcessor.coverage" NAME="songProcessor Coverage Results" MODIFIED="1745511074354" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Eksperimenter" />
     <SUITE FILE_PATH="coverage/experiment_Music$Client.coverage" NAME="Client Coverage Results" MODIFIED="1741770542895" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Eksperimenter" />
+    <SUITE FILE_PATH="coverage/OLTW_aligner_py$RealtimeChromaFeatureExtractor.coverage" NAME="RealtimeChromaFeatureExtractor Coverage Results" MODIFIED="1745511087967" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Eksperimenter" />
     <SUITE FILE_PATH="coverage/experiment_Music$RealtimeChromaFeatureExtractor.coverage" NAME="RealtimeChromaFeatureExtractor Coverage Results" MODIFIED="1744127332198" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Eksperimenter" />
+    <SUITE FILE_PATH="coverage/OLTW_aligner_py$OLTW_aligner.coverage" NAME="OLTW-aligner Coverage Results" MODIFIED="1745509593605" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Eksperimenter" />
     <SUITE FILE_PATH="coverage/experiment_Music$songProcessor.coverage" NAME="songProcessor Coverage Results" MODIFIED="1744269765140" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Eksperimenter" />
   </component>
 </project>

@@ -15,6 +15,7 @@ public class ProgressBar : MonoBehaviour
     // Start is called before the first frame update
     void Update()
     {
+        Debug.Log("ProgressBar Update called");
         if (max > 0)
             GetCurrentFill();
     }
@@ -23,6 +24,7 @@ public class ProgressBar : MonoBehaviour
     void GetCurrentFill()
     {
         float fillAmount = Mathf.Clamp01((float)current / max);
+        Debug.Log($"Current: {current}, Max: {max}, Fill: {fillAmount}");
         mask.fillAmount = fillAmount;
     }
 
