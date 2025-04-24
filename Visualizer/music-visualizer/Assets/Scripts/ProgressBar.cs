@@ -1,18 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
+[ExecuteInEditMode()]
 public class ProgressBar : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public int max; //skal connectes med json
+    public int current; // skal følges med timestamps
+    public Image mask;
 
-    // Update is called once per frame
+    // Start is called before the first frame update
     void Update()
     {
-        
+        GetCurrentFill();
+    }
+
+    void GetCurrentFill()
+    {
+        float fillamount = (float)current / (float)max;
+        mask.fillAmount = fillamount;
     }
 }
