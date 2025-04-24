@@ -4,6 +4,7 @@ import numpy as np
 import sys
 import os
 import Client
+import subprocess
 
 # Set working directory to files absolute path (this is because unity changes the CWD when launching the script)
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -96,3 +97,6 @@ with open(json_output_path, "w") as f:
     json.dump(feature_data, f, indent=4, default=lambda x: float(x))
 
 Client.send_data("Should have saved" )
+subprocess.run(["python", "OLTW-aligner.py", selected_song])
+
+

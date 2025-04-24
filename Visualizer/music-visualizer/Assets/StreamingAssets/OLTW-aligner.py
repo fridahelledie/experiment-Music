@@ -136,6 +136,22 @@ def mic_callback(indata, frames, time, status):
     append_and_process_chroma(chroma)
 
 # =============== Main ===============
+Client.send_data("READY")
+
+# Wait for Unity to send "START"
+def wait_for_start():
+    while True:
+        try:
+            data = Client.sock.recv(1024).decode("utf-8").strip()
+            if data == "START":
+                print("Received START from Unity.")
+                break
+        except Exception as e:
+            print("Error while waiting for START:", e)
+            break
+
+wait_for_start()
+
 try:
     if USE_SIMULATED_INPUT:
         simulate_input(sim_audio_path)  # Just using the same track as dummy live input
