@@ -1,3 +1,5 @@
+import time
+
 import librosa
 import numpy as np
 import queue
@@ -14,6 +16,9 @@ import librosa.display
 
 c = 16 #Window Size
 
+#Debugging
+duration = 100
+
 #variables for get inc and online tw
 previous = None
 runCount = 1
@@ -28,7 +33,7 @@ N = 8 # number of chroma features per chunk
 buffer_size = N * hop_length
 
 #Reference audio
-reference_audio_path = "audio_file.wav"
+reference_audio_path = "03BarberSonata_1.wav"
 y, sr = librosa.load(reference_audio_path, sr=None)
 Y_chroma = librosa.feature.chroma_stft(y=y,
     sr=sr,
@@ -38,7 +43,7 @@ Y_chroma = librosa.feature.chroma_stft(y=y,
 )
 
 #Input audio
-input_audio_path = "audio_file_slowed.wav"
+input_audio_path = "03BarberSonata_1.wav"
 x, sr = librosa.load(input_audio_path, sr=None)
 X_chroma = librosa.feature.chroma_stft(y=x, sr=sr, n_fft=n_fft, hop_length=hop_length)
 
@@ -81,6 +86,32 @@ def compare_dtw_paths(D, paths, labels, colors):
     plt.grid()
     plt.show()
 
+def generate_reference_chromas(audio_path, buffer_size):
+    audio, sr_ = librosa.load(audio_path, sr=sr, duration=duration)
+
+    # Declare variables
+    chroma = np.empty(shape=(12, 0))  # Declares an empty array for keeping the chroma features as they are inputted
+    audio_queue = queue.Queue()
+
+    for frame in range(0, len(audio), buffer_size):
+        audio_chunk = audio[frame:frame + buffer_size]
+
+        # Stop when file ends (Safety)
+        if len(audio_chunk) == 0:
+            break
+
+        # If stereo, convert to mono
+        if audio_chunk.ndim > 1:
+            audio_chunk = audio_chunk.mean(axis=1)
+
+        # Enqueue audio chunk
+        audio_queue.put(audio_chunk)
+
+        chroma_chunk = calculate_chroma_chunk(audio_queue.get())
+        chroma = np.append(chroma, chroma_chunk, axis=1)
+        # print(chroma.shape)
+
+    return chroma
 
 
 def online_tw(live_features, ref_features, _D, _P, _t, _j):
@@ -190,7 +221,7 @@ def GetInc(t, j, D):
     return bestMove
 
 def simulate_live_audio_input(audio_path, buffer_size, ref):
-    live_audio, sr_ = librosa.load(audio_path, sr=sr)
+    live_audio, sr_ = librosa.load(audio_path, sr=sr, duration=duration)
 
     #Declare variables
     live_chroma = np.empty(shape=(ref.shape[0], 0)) #Declares an empty array for keeping the chroma features as they are inputted
@@ -229,7 +260,7 @@ def simulate_live_audio_input(audio_path, buffer_size, ref):
     return D,P
 
 def simulate_live_audio_input_new(audio_path, buffer_size, ref):
-    live_audio, sr_ = librosa.load(audio_path, sr=sr) # Force same sr as reference
+    live_audio, sr_ = librosa.load(audio_path, sr=sr, duration=duration) # Force same sr as reference
 
     #Declare variables
     live_chroma = np.empty(shape=(ref.shape[0], 0)) #Declares an empty array for keeping the chroma features as they are inputted
@@ -265,13 +296,16 @@ def simulate_live_audio_input_new(audio_path, buffer_size, ref):
             continue  # skip until we have enough audio
 
         # Compute chroma for this chunk
-        chroma = librosa.feature.chroma_stft(
-            y=padded_chunk,
-            sr=sr,
-            n_fft=n_fft,
-            hop_length=hop_length,
-            center = False
-        )
+        chroma = calculate_chroma_chunk(padded_chunk)
+        # chroma = librosa.feature.chroma_stft(
+        #     y=padded_chunk,
+        #     sr=sr,
+        #     n_fft=n_fft,
+        #     hop_length=hop_length,
+        #     center = False
+        # )
+        #
+
 
         # Keep only chroma frames that came from the *new* audio (excluding overlap frames)
         new_frames = (len(audio_chunk) // hop_length)
@@ -330,19 +364,40 @@ def full_offline_dtw(reference_chroma, live_chroma):
 
 
 def calculate_chroma_chunk(audio_chunk):
-    chroma = librosa.feature.chroma_stft(y=audio_chunk, sr=sr, n_fft=n_fft, hop_length=hop_length)
+    #Old chroma calculation
+    # chroma = librosa.feature.chroma_stft(y=audio_chunk, sr=sr, n_fft=n_fft, hop_length=hop_length)
+
+    #
+    chroma = librosa.feature.chroma_stft(
+        y=audio_chunk,
+        sr=sr,
+        n_fft=n_fft,
+        hop_length=hop_length,
+        center = False
+    )
 
     return chroma
 
 
 
-D_new, P_new = simulate_live_audio_input_new(audio_path= input_audio_path, buffer_size= buffer_size, ref=Y_chroma)
 
-D, P = simulate_live_audio_input(audio_path=input_audio_path, buffer_size= buffer_size, ref=Y_chroma)
+ref_chroma = generate_reference_chromas(reference_audio_path, buffer_size)
+
+
+#Timing the algorithm
+start_time = time.time()
+
+D_new, P_new = simulate_live_audio_input_new(audio_path= input_audio_path, buffer_size= buffer_size, ref=ref_chroma)
+
+# D, P = simulate_live_audio_input(audio_path=input_audio_path, buffer_size= buffer_size, ref=ref_chroma)
 
 #D_chroma, P_chroma = simulate_live_chroma_input(precomputed_chroma=X_chroma, ref=Y_chroma, chunk_size_frames=10)
 
 #D_offline, P_offline = full_offline_dtw(Y_chroma, X_chroma)
+
+#Print time since start
+print(f"Finished in {time.time() - start_time} seconds")
+
 '''
 compare_dtw_paths(
     D,
@@ -353,7 +408,7 @@ compare_dtw_paths(
 
 compare_dtw_paths(
     D_new,
-    [P, P_new,],
+    [P_new,],
     ["Original Simulation", "Improved Simulation"],
     ["blue", "orange"]
 )

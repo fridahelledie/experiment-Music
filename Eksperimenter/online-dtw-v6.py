@@ -198,6 +198,34 @@ def GetInc(t, j, D):
 
     return bestMove
 
+def generate_reference_chromas(audio_path, buffer_size):
+    audio, sr_ = librosa.load(audio_path, sr=sr)
+
+    # Declare variables
+    chroma = np.empty(shape=(12, 0))  # Declares an empty array for keeping the chroma features as they are inputted
+    audio_queue = queue.Queue()
+
+    for frame in range(0, len(audio), buffer_size):
+        audio_chunk = audio[frame:frame + buffer_size]
+
+        # Stop when file ends (Safety)
+        if len(audio_chunk) == 0:
+            break
+
+        # If stereo, convert to mono
+        if audio_chunk.ndim > 1:
+            audio_chunk = audio_chunk.mean(axis=1)
+
+        # Enqueue audio chunk
+        audio_queue.put(audio_chunk)
+
+        chroma_chunk = calculate_chroma_chunk(audio_queue.get())
+        chroma = np.append(chroma, chroma_chunk, axis=1)
+        # print(chroma.shape)
+
+    return chroma
+
+
 def simulate_live_audio_input(audio_path, buffer_size, ref):
     live_audio, sr_ = librosa.load(audio_path, sr=sr)
 
@@ -239,6 +267,7 @@ def simulate_live_audio_input(audio_path, buffer_size, ref):
         D, P = online_tw(live_chroma, ref, D,P,t,j)
 
     show_dtw(D, np.array(P))
+
     print(f"{D.shape}, path end: {P[-1]}")
 
 
@@ -252,4 +281,5 @@ def calculate_chroma_chunk(audio_chunk):
 # show_colored_path(D, np.array(P))
 
 #Frida
-simulate_live_audio_input(audio_path="audio_file.wav", buffer_size=4096, ref=Y_chroma)
+ref_chroma = generate_reference_chromas(reference_audio_path, buffer_size=4096)
+simulate_live_audio_input(audio_path="audio_file_slowed.wav", buffer_size=4096, ref=ref_chroma)
