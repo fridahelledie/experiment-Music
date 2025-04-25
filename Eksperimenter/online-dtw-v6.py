@@ -8,6 +8,7 @@ import soundfile as sf
 from numpy.ma.core import shape
 from dtaidistance import dtw
 from scipy.spatial.distance import euclidean
+import time
 
 c = 8 #Window Size
 
@@ -281,5 +282,9 @@ def calculate_chroma_chunk(audio_chunk):
 # show_colored_path(D, np.array(P))
 
 #Frida
+start_time = time.time()
+
 ref_chroma = generate_reference_chromas(reference_audio_path, buffer_size=4096)
 simulate_live_audio_input(audio_path="audio_file_slowed.wav", buffer_size=4096, ref=ref_chroma)
+
+print(f"Finished in {time.time() - start_time} seconds")
