@@ -6,11 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="335f97f5-27a3-420f-a13a-7d4cfa8ed7a9" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scenes/FinalScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scenes/FinalScene.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scenes/MenuScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scenes/MenuScene.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/playbackInitializer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/playbackInitializer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/StreamingAssets/OLTW-aligner.py" beforeDir="false" afterPath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/StreamingAssets/OLTW-aligner.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/StreamingAssets/jsonVisualizations/BarberPianoSonataMvt3.json.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/StreamingAssets/songProcessor.py" beforeDir="false" afterPath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/StreamingAssets/songProcessor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Visualizer/music-visualizer/ProjectSettings/EditorBuildSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Visualizer/music-visualizer/ProjectSettings/EditorBuildSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
