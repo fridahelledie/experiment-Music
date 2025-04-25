@@ -6285,10 +6285,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1803115031}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 75e0bb4fb31a8c440af82f4ca5050bf6,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1803115030}
   m_SourcePrefab: {fileID: 100100000, guid: 75e0bb4fb31a8c440af82f4ca5050bf6, type: 3}
 --- !u!1 &590415957
 GameObject:
@@ -6924,8 +6920,8 @@ MonoBehaviour:
   lerpSpeed: 0.2
   offsetAtMax: {x: 0, y: 0, z: 0}
   scaleMax: {x: 0, y: 0, z: 0}
-  blackMaterial: {fileID: 0}
-  colorMaterial: {fileID: 0}
+  blackMaterial: {fileID: 2100000, guid: 0765034c5473d034c9c7845050e3ad40, type: 2}
+  colorMaterial: {fileID: 2100000, guid: 760f5485026ad69459ea8662e9415c1e, type: 2}
 --- !u!1001 &890699164
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7260,8 +7256,8 @@ MonoBehaviour:
   lerpSpeed: 0.2
   offsetAtMax: {x: 0, y: 0, z: 0}
   scaleMax: {x: 0, y: 0, z: 0}
-  blackMaterial: {fileID: 0}
-  colorMaterial: {fileID: 0}
+  blackMaterial: {fileID: 2100000, guid: 0765034c5473d034c9c7845050e3ad40, type: 2}
+  colorMaterial: {fileID: 2100000, guid: c7374c81e39308c46b2cac9ca4af5d35, type: 2}
 --- !u!4 &1138891590 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 75e0bb4fb31a8c440af82f4ca5050bf6,
@@ -7451,10 +7447,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1885439271}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 75e0bb4fb31a8c440af82f4ca5050bf6,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1885439270}
   m_SourcePrefab: {fileID: 100100000, guid: 75e0bb4fb31a8c440af82f4ca5050bf6, type: 3}
 --- !u!4 &1252442500 stripped
 Transform:
@@ -7576,8 +7568,8 @@ MonoBehaviour:
   lerpSpeed: 0.2
   offsetAtMax: {x: 0, y: 0, z: 0}
   scaleMax: {x: 0, y: 0, z: 0}
-  blackMaterial: {fileID: 0}
-  colorMaterial: {fileID: 0}
+  blackMaterial: {fileID: 2100000, guid: 0765034c5473d034c9c7845050e3ad40, type: 2}
+  colorMaterial: {fileID: 2100000, guid: 115729b9cc26f384eb6044943490a8fe, type: 2}
 --- !u!1 &1281632953 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 75e0bb4fb31a8c440af82f4ca5050bf6,
@@ -7714,8 +7706,8 @@ MonoBehaviour:
   lerpSpeed: 0.2
   offsetAtMax: {x: 0, y: 0, z: 0}
   scaleMax: {x: 0, y: 0, z: 0}
-  blackMaterial: {fileID: 0}
-  colorMaterial: {fileID: 0}
+  blackMaterial: {fileID: 2100000, guid: 0765034c5473d034c9c7845050e3ad40, type: 2}
+  colorMaterial: {fileID: 2100000, guid: 478576d7a44151a45af11ffab6d1660c, type: 2}
 --- !u!1 &1515869481
 GameObject:
   m_ObjectHideFlags: 0
@@ -7891,8 +7883,8 @@ MonoBehaviour:
   lerpSpeed: 0.2
   offsetAtMax: {x: 0, y: 0, z: 0}
   scaleMax: {x: 0, y: 0, z: 0}
-  blackMaterial: {fileID: 0}
-  colorMaterial: {fileID: 0}
+  blackMaterial: {fileID: 2100000, guid: 0765034c5473d034c9c7845050e3ad40, type: 2}
+  colorMaterial: {fileID: 2100000, guid: bf7422a8e0ac47d4096e05c3369e288a, type: 2}
 --- !u!1 &1612388979
 GameObject:
   m_ObjectHideFlags: 0
@@ -7974,24 +7966,6 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 2095235730}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1634650750
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 675568629}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3fa14b3d13d523d439ae39ebb4df7a16, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  featureType: 0
-  lerpSpeed: 0.2
-  offsetAtMax: {x: 0, y: 0, z: 0}
-  scaleMax: {x: 0, y: 0, z: 0}
-  blackMaterial: {fileID: 0}
-  colorMaterial: {fileID: 0}
 --- !u!114 &1634650751
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8008,8 +7982,8 @@ MonoBehaviour:
   lerpSpeed: 0.2
   offsetAtMax: {x: 0, y: 0, z: 0}
   scaleMax: {x: 0, y: 0, z: 0}
-  blackMaterial: {fileID: 0}
-  colorMaterial: {fileID: 0}
+  blackMaterial: {fileID: 2100000, guid: 0765034c5473d034c9c7845050e3ad40, type: 2}
+  colorMaterial: {fileID: 2100000, guid: 5063b1dd60d42624197847abc95b0dc7, type: 2}
 --- !u!1001 &1659162293
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8292,8 +8266,8 @@ MonoBehaviour:
   lerpSpeed: 0.2
   offsetAtMax: {x: 0, y: 0, z: 0}
   scaleMax: {x: 0, y: 0, z: 0}
-  blackMaterial: {fileID: 0}
-  colorMaterial: {fileID: 0}
+  blackMaterial: {fileID: 2100000, guid: 0765034c5473d034c9c7845050e3ad40, type: 2}
+  colorMaterial: {fileID: 2100000, guid: e2637c8e8ad1f87439cf357c14932f4f, type: 2}
 --- !u!4 &1788472838 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 75e0bb4fb31a8c440af82f4ca5050bf6,
@@ -8306,24 +8280,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 549937547}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1803115030
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1803115027}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3fa14b3d13d523d439ae39ebb4df7a16, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  featureType: 0
-  lerpSpeed: 0.2
-  offsetAtMax: {x: 0, y: 0, z: 0}
-  scaleMax: {x: 0, y: 0, z: 0}
-  blackMaterial: {fileID: 0}
-  colorMaterial: {fileID: 0}
 --- !u!114 &1803115031
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8340,32 +8296,14 @@ MonoBehaviour:
   lerpSpeed: 0.2
   offsetAtMax: {x: 0, y: 0, z: 0}
   scaleMax: {x: 0, y: 0, z: 0}
-  blackMaterial: {fileID: 0}
-  colorMaterial: {fileID: 0}
+  blackMaterial: {fileID: 2100000, guid: 0765034c5473d034c9c7845050e3ad40, type: 2}
+  colorMaterial: {fileID: 2100000, guid: c8f8cbc4e07c9274eac4bbb2f396cb4c, type: 2}
 --- !u!1 &1885439267 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 75e0bb4fb31a8c440af82f4ca5050bf6,
     type: 3}
   m_PrefabInstance: {fileID: 1225435171}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1885439270
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1885439267}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3fa14b3d13d523d439ae39ebb4df7a16, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  featureType: 0
-  lerpSpeed: 0.2
-  offsetAtMax: {x: 0, y: 0, z: 0}
-  scaleMax: {x: 0, y: 0, z: 0}
-  blackMaterial: {fileID: 0}
-  colorMaterial: {fileID: 0}
 --- !u!114 &1885439271
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8382,8 +8320,8 @@ MonoBehaviour:
   lerpSpeed: 0.2
   offsetAtMax: {x: 0, y: 0, z: 0}
   scaleMax: {x: 0, y: 0, z: 0}
-  blackMaterial: {fileID: 0}
-  colorMaterial: {fileID: 0}
+  blackMaterial: {fileID: 2100000, guid: 0765034c5473d034c9c7845050e3ad40, type: 2}
+  colorMaterial: {fileID: 2100000, guid: 2607d762ac514324793aac15a9f35335, type: 2}
 --- !u!4 &1886218756 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 75e0bb4fb31a8c440af82f4ca5050bf6,
@@ -8406,8 +8344,8 @@ MonoBehaviour:
   lerpSpeed: 0.2
   offsetAtMax: {x: 0, y: 0, z: 0}
   scaleMax: {x: 0, y: 0, z: 0}
-  blackMaterial: {fileID: 0}
-  colorMaterial: {fileID: 0}
+  blackMaterial: {fileID: 2100000, guid: 0765034c5473d034c9c7845050e3ad40, type: 2}
+  colorMaterial: {fileID: 2100000, guid: e573c37c367c7d44698b4e1e492834c2, type: 2}
 --- !u!1 &1905211099 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 75e0bb4fb31a8c440af82f4ca5050bf6,
@@ -8430,8 +8368,8 @@ MonoBehaviour:
   lerpSpeed: 0.2
   offsetAtMax: {x: 0, y: 0, z: 0}
   scaleMax: {x: 0, y: 0, z: 0}
-  blackMaterial: {fileID: 0}
-  colorMaterial: {fileID: 0}
+  blackMaterial: {fileID: 2100000, guid: 0765034c5473d034c9c7845050e3ad40, type: 2}
+  colorMaterial: {fileID: 2100000, guid: 6879c2b76041c214aa28955390e1c044, type: 2}
 --- !u!1001 &1908608237
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8884,10 +8822,6 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1634650751}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 75e0bb4fb31a8c440af82f4ca5050bf6,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1634650750}
   m_SourcePrefab: {fileID: 100100000, guid: 75e0bb4fb31a8c440af82f4ca5050bf6, type: 3}
 --- !u!1 &2125133678 stripped
 GameObject:
@@ -8911,8 +8845,8 @@ MonoBehaviour:
   lerpSpeed: 0.2
   offsetAtMax: {x: 0, y: 0, z: 0}
   scaleMax: {x: 0, y: 0, z: 0}
-  blackMaterial: {fileID: 0}
-  colorMaterial: {fileID: 0}
+  blackMaterial: {fileID: 2100000, guid: 0765034c5473d034c9c7845050e3ad40, type: 2}
+  colorMaterial: {fileID: 2100000, guid: d7384be285d16a041993fb5f43af9fc3, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
