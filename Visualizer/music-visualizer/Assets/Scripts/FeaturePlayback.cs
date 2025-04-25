@@ -67,9 +67,9 @@ public class FeaturePlayback : MonoBehaviour
     private void ApplyFeatureStep(FeatureEntry entry)
     {
         ChromaFeature chromaFeature = new ChromaFeature(
-            entry.chroma[0], entry.chroma[1], entry.chroma[2], entry.chroma[3], entry.chroma[4],
-            entry.chroma[5], entry.chroma[6], entry.chroma[7], entry.chroma[8], entry.chroma[9],
-            entry.chroma[10], entry.chroma[11]
+            entry.chroma[9], entry.chroma[10], entry.chroma[11], entry.chroma[0], entry.chroma[1],
+            entry.chroma[2], entry.chroma[3], entry.chroma[4], entry.chroma[5], entry.chroma[6],
+            entry.chroma[7], entry.chroma[8]
         );
 
         OnsetFeatures onsetFeature = new OnsetFeatures(entry.onset);
