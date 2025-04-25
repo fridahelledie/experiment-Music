@@ -20,7 +20,8 @@ public class FeaturePlayback : MonoBehaviour
     public delegate void BeatDetected();
     public static BeatDetected OnBeatDetected;
 
-    //public ProgressBar progressBar; //her skal progressBar assignes
+    public ProgressBar progressBar; //her skal progressBar assignes
+    private float totalDuration = 1f;
 
     [System.Serializable]
     public class FeatureEntry
@@ -51,12 +52,14 @@ public class FeaturePlayback : MonoBehaviour
         // Register listener for Python alignment updates
         playbackInitializer.instance.onPythonMessageReceived.AddListener(OnAlignmentStepReceived);
 
-       /* if (featureData != null && featureData.Count > 0 && progressBar != null)
+        if (featureData != null && featureData.Count > 0)
         {
-            float lastTimestamp = featureData[featureData.Count - 1].timestamp;
-            progressBar.max = Mathf.CeilToInt(lastTimestamp);
-            Debug.Log("Last timestamp: " + lastTimestamp);
-        }*/
+            totalDuration = featureData[featureData.Count - 1].timestamp;
+            Debug.Log("Total duration set to: " + totalDuration);
+
+            if (progressBar != null)
+                progressBar.SetMaxDuration(totalDuration);
+        }
     }
 
     // Called each time OLTW-aligner sends a new alignment step
@@ -93,10 +96,8 @@ public class FeaturePlayback : MonoBehaviour
         if (entry.onset > 0.3f) OnsetFeatureRecieved?.Invoke(onsetFeature);
         AmplitudeFeatureRecieved?.Invoke(amplitudeFeature);
 
-       /* if (progressBar != null)
-        {
-            progressBar.current = Mathf.FloorToInt(entry.timestamp);
-        }*/
+        if (progressBar != null)
+            progressBar.UpdateProgress(entry.timestamp);
     }
 
     private bool IsBeatDetected(float? beatTime)
