@@ -8,6 +8,8 @@ import Client
 
 from dtaidistance import dtw
 
+Client.send_data("Successfully entered python script")
+
 # Set working directory to files absolute path (this is because unity changes the CWD when launching the script)
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
