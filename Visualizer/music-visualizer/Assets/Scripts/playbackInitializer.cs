@@ -72,8 +72,9 @@ public class playbackInitializer : MonoBehaviour
     }
     public void StartPlayback()
     {
+        print("Ran the Function");
+
         SceneManager.LoadScene("FinalScene");
-        
         // Start the thread for receiving data
         ThreadStart ts = new ThreadStart(GetInfo);
         mThread = new Thread(ts);
@@ -89,6 +90,7 @@ public class playbackInitializer : MonoBehaviour
         else
         {
             FindObjectOfType<FeaturePlayback>().StartLivePlayback(selectedSong);
+            print("Ran StartPythonProcess");
             StartPythonProcess("OLTW-aligner", selectedSong + songFiletype);
             // Note for future: Start FeaturePlayback, reading the selectedSong and stepping visualization based on python messages sent by oltw script
         }
@@ -119,6 +121,8 @@ public class playbackInitializer : MonoBehaviour
                     // Chain environment activation and script execution
                     sw.WriteLine($"call conda activate {condaEnvName} && python {pythonScriptPath} {songName}");
                     sw.WriteLine("exit"); // Exit cmd after running the command (unsure if this is necessary?)
+                    print("Wrote the python activation line");
+
                 }
             }
 
