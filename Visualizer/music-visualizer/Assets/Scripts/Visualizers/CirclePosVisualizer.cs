@@ -7,7 +7,7 @@ public class CirclePosVisualizer : FeatureVisualizer
     [SerializeField] private float minDistance = 0.5f;
     [SerializeField] private float offsetAtMax = 2f;
 
-    [SerializeField] Material blackMaterial;
+    
     [SerializeField] Material colorMaterial;
 
     private Renderer rendr;
@@ -37,14 +37,17 @@ public class CirclePosVisualizer : FeatureVisualizer
     {
         if (rendr != null)
         {
-            if (value >= 0.4)
-            {
-                rendr.material = blackMaterial;
-            }
-            else
-            {
-                rendr.material.Lerp(blackMaterial, colorMaterial, value);
-            }
+            Color orgColor = rendr.material.color;
+            // material converted to hsv so we can manipulate brightness later
+            Color.RGBToHSV(orgColor, out float h, out float s, out float v);
+
+            //here the value is changed depending on the value
+            float newSaturation = Mathf.Lerp(0f, 1f, value); // 0 = grayscale, 1 = full color
+
+            //converted back to RGB to be used as the color yay
+            Color newColor = Color.HSVToRGB(h, newSaturation, v);
+
+            rendr.material.color = newColor;
         }
     }
 

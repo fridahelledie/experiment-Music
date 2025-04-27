@@ -74,7 +74,6 @@ public class FeaturePlayback : MonoBehaviour
 
         OnsetFeatures onsetFeature = new OnsetFeatures(entry.onset);
         AmplitudeFeature amplitudeFeature = new AmplitudeFeature(entry.amplitude);
-
         if (IsBeatDetected(entry.beat_times))
         {
             OnBeatDetected?.Invoke();
