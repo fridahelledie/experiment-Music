@@ -88,4 +88,13 @@ public class FeaturePlayback : MonoBehaviour
     {
         return beatTime.HasValue;
     }
+
+    public float GetLastTimestamp()
+    {
+        if (featureData != null && featureData.Count > 0)
+        {
+            return featureData[featureData.Count - 1].timestamp;
+        }
+        return 0f;
+    }
 }
