@@ -17,18 +17,8 @@ public class ChromaFeatureRepresentation : MonoBehaviour
     [SerializeField] FeatureVisualizer G;
     [SerializeField] FeatureVisualizer G_sharp;
 
-    [SerializeField] FeatureVisualizer OnsetA;
-    [SerializeField] FeatureVisualizer OnsetA1;
-    [SerializeField] FeatureVisualizer OnsetB;
-    [SerializeField] FeatureVisualizer OnsetC;
-    [SerializeField] FeatureVisualizer OnsetC1;
-    [SerializeField] FeatureVisualizer OnsetD;
-    [SerializeField] FeatureVisualizer OnsetD1;
-    [SerializeField] FeatureVisualizer OnsetE;
-    [SerializeField] FeatureVisualizer OnsetF;
-    [SerializeField] FeatureVisualizer OnsetF1;
-    [SerializeField] FeatureVisualizer OnsetG;
-    [SerializeField] FeatureVisualizer OnsetG1;
+    [SerializeField] FeatureVisualizer Onset;
+    
 
     [SerializeField] FeatureVisualizer Amplitude;
 
@@ -115,54 +105,11 @@ public class ChromaFeatureRepresentation : MonoBehaviour
     void OnsetFeatureRecieved(OnsetFeatures onsetStrenght)
     {
         
-        if (OnsetA != null)
+        if (Onset != null)
         {
-            OnsetA.UpdateFeature(onsetStrenght.Strenght);  
+            Onset.UpdateFeature(onsetStrenght.Strenght);  
         }
-        if (OnsetA1 != null)
-        {
-            OnsetA1.UpdateFeature(onsetStrenght.Strenght);
-        }
-        if (OnsetB != null)
-        {
-            OnsetB.UpdateFeature(onsetStrenght.Strenght);
-        }
-        if (OnsetC != null)
-        {
-            OnsetC.UpdateFeature(onsetStrenght.Strenght);
-        }
-        if (OnsetC1 != null)
-        {
-            OnsetC1.UpdateFeature(onsetStrenght.Strenght);
-        }
-        if (OnsetD != null)
-        {
-            OnsetD.UpdateFeature(onsetStrenght.Strenght);
-        }
-        if (OnsetD1 != null)
-        {
-            OnsetD1.UpdateFeature(onsetStrenght.Strenght);
-        }
-        if (OnsetE != null)
-        {
-            OnsetE.UpdateFeature(onsetStrenght.Strenght);
-        }
-        if (OnsetF != null)
-        {
-            OnsetF.UpdateFeature(onsetStrenght.Strenght);
-        }
-        if (OnsetF1 != null)
-        {
-            OnsetF1.UpdateFeature(onsetStrenght.Strenght);
-        }
-        if (OnsetG != null)
-        {
-            OnsetG.UpdateFeature(onsetStrenght.Strenght);
-        }
-        if (OnsetG1 != null)
-        {
-            OnsetG1.UpdateFeature(onsetStrenght.Strenght);
-        }
+       
 
 
     }
