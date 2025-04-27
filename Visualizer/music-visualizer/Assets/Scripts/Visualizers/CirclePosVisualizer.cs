@@ -27,7 +27,7 @@ public class CirclePosVisualizer : FeatureVisualizer
         rendr = GetComponent<Renderer>();
         if (rendr != null)
         {
-            // Create an instance of the material so we don’t modify the shared one
+            // Create an instance of the material so we donï¿½t modify the shared one
             instanceMaterial = new Material(rendr.material);
             rendr.material = instanceMaterial;
             originalColor = instanceMaterial.color;
