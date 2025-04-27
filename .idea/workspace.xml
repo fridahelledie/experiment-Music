@@ -5,13 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="335f97f5-27a3-420f-a13a-7d4cfa8ed7a9" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scenes/FinalScene.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scenes/FinalScene.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/ChromaFeatureRepresentation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/ChromaFeatureRepresentation.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/FeaturePlayback.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/FeaturePlayback.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/Visualizers/CirclePosVisualizer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/Visualizers/CirclePosVisualizer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/Visualizers/PosScaleVizualiter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/Visualizers/PosScaleVizualiter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/playbackInitializer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/playbackInitializer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/Progress_bar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Visualizer/music-visualizer/Assets/Scripts/Progress_bar.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,7 +31,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "res__bar",
+    "git-widget-placeholder": "Rebasing res__bar",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
