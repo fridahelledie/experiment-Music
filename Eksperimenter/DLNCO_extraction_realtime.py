@@ -87,23 +87,23 @@ thread = threading.Thread(target=processing_thread, daemon=True)
 thread.start()
 
 # Start input stream
-print("Streaming... Press Ctrl+C to stop and view the DLNCO feature plot.")
-try:
-    with sd.InputStream(channels=1, samplerate=samplerate, blocksize=blocksize, callback=audio_callback):
-        while True:
-            sd.sleep(1000)
-except KeyboardInterrupt:
-    print("\nStopped. Generating DLNCO plot...")
-
-# After stopping, assemble and plot
-if final_dlnco:
-    full_dlnco = np.concatenate(final_dlnco, axis=1)
-    plt.figure(figsize=(12, 4))
-    librosa.display.specshow(full_dlnco, y_axis='chroma', x_axis='time',
-                             sr=samplerate, hop_length=hop_length, cmap='coolwarm')
-    plt.title("Final DLNCO Feature Plot")
-    plt.colorbar()
-    plt.tight_layout()
-    plt.show()
-else:
-    print("No DLNCO features were captured.")
+# print("Streaming... Press Ctrl+C to stop and view the DLNCO feature plot.")
+# try:
+#     with sd.InputStream(channels=1, samplerate=samplerate, blocksize=blocksize, callback=audio_callback):
+#         while True:
+#             sd.sleep(1000)
+# except KeyboardInterrupt:
+#     print("\nStopped. Generating DLNCO plot...")
+#
+# # After stopping, assemble and plot
+# if final_dlnco:
+#     full_dlnco = np.concatenate(final_dlnco, axis=1)
+#     plt.figure(figsize=(12, 4))
+#     librosa.display.specshow(full_dlnco, y_axis='chroma', x_axis='time',
+#                              sr=samplerate, hop_length=hop_length, cmap='coolwarm')
+#     plt.title("Final DLNCO Feature Plot")
+#     plt.colorbar()
+#     plt.tight_layout()
+#     plt.show()
+# else:
+#     print("No DLNCO features were captured.")
