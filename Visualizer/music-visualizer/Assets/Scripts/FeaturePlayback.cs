@@ -71,7 +71,7 @@ public class FeaturePlayback : MonoBehaviour
             entry.chroma[2], entry.chroma[3], entry.chroma[4], entry.chroma[5], entry.chroma[6],
             entry.chroma[7], entry.chroma[8]
         );
-
+        print("chroma features");
         OnsetFeatures onsetFeature = new OnsetFeatures(entry.onset);
         AmplitudeFeature amplitudeFeature = new AmplitudeFeature(entry.amplitude);
         if (IsBeatDetected(entry.beat_times))

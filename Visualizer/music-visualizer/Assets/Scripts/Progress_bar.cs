@@ -19,7 +19,7 @@ public class Progress_bar : MonoBehaviour
 
             // uses last time stamp to scale the bar in x
             Vector3 newScale = transform.localScale;
-            newScale.x = lastTimestamp * 0.1f;  // optional multiplier
+            newScale.x = lastTimestamp /100f;  // optional multiplier
             transform.localScale = newScale;
         }
     }
