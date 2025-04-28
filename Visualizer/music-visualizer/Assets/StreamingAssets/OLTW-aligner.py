@@ -8,19 +8,22 @@ import Client
 
 from dtaidistance import dtw
 
-Client.send_data("Successfully entered python script")
-
 # Set working directory to files absolute path (this is because unity changes the CWD when launching the script)
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 # =============== CONFIG ===============
 USE_SIMULATED_INPUT = True  # Flip this to False to use real mic input
-SIMULATED_INPUT_NAME = "03PollackBarberSonata.mp3"
+SIMULATED_INPUT_NAME = "03PollackBarberSonata.wav"
 BUFFER_SIZE = 4096
 N_FFT = 2048
 HOP_LENGTH = 512
 C = 8  # Window size for DTW
 # ======================================
+
+# Client connection
+if not Client.connect():
+    print("Failed to connect to Unity client.")
+    sys.exit(1)
 
 # Command-line input
 if len(sys.argv) < 2:
@@ -31,13 +34,10 @@ song_name = sys.argv[1]
 ref_audio_path = os.path.join("audio", song_name)
 sim_audio_path = os.path.join("audio", SIMULATED_INPUT_NAME)
 
+Client.send_data(ref_audio_path)
+
 # Load reference audio and chroma
 y_ref, sr = librosa.load(ref_audio_path, sr=None)
-
-# Client connection
-if not Client.connect():
-    print("Failed to connect to Unity client.")
-    sys.exit(1)
 
 # Chroma buffer for live input
 live_chroma = np.empty(shape=(ref_chroma.shape[0], 0))
