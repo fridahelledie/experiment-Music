@@ -6,7 +6,7 @@ public class Progress_bar : MonoBehaviour
 {
     private FeaturePlayback featurePlayback;
     [SerializeField] private Transform child;
-    private float lastTimestamp;
+    private float lastTimestamp; //here the last timestamp in json should be stored
 
     // Start is called before the first frame update
     void Start()
@@ -26,6 +26,7 @@ public class Progress_bar : MonoBehaviour
 
     private void OnEnable()
     {
+        //sub to the python event
         playbackInitializer.instance.onPythonMessageReceived.AddListener(OnAlignmentStepReceived);
     }
 
@@ -34,6 +35,7 @@ public class Progress_bar : MonoBehaviour
         playbackInitializer.instance.onPythonMessageReceived.RemoveListener(OnAlignmentStepReceived);
     }
 
+    //current timestamp is parse into a float toupdate the progress bar over time
     private void OnAlignmentStepReceived(string message)
     {
         if (float.TryParse(message, out float currentTimestamp))
@@ -42,6 +44,7 @@ public class Progress_bar : MonoBehaviour
         }
     }
 
+    //Here the updating happens
     private void UpdateProgress(float currentTimestamp)
     {
         if (child == null || lastTimestamp <= 0)
