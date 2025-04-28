@@ -5,7 +5,8 @@ using UnityEngine;
 public class Progress_bar : MonoBehaviour
 {
     private FeaturePlayback featurePlayback;
-    
+    [SerializeField] private Transform child;
+    private float lastTimestamp;
 
     // Start is called before the first frame update
     void Start()
@@ -23,9 +24,33 @@ public class Progress_bar : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnEnable()
     {
-        
+        playbackInitializer.instance.onPythonMessageReceived.AddListener(OnAlignmentStepReceived);
+    }
+
+    private void OnDisable()
+    {
+        playbackInitializer.instance.onPythonMessageReceived.RemoveListener(OnAlignmentStepReceived);
+    }
+
+    private void OnAlignmentStepReceived(string message)
+    {
+        if (float.TryParse(message, out float currentTimestamp))
+        {
+            UpdateProgress(currentTimestamp);
+        }
+    }
+
+    private void UpdateProgress(float currentTimestamp)
+    {
+        if (child == null || lastTimestamp <= 0)
+            return;
+
+        float progress = Mathf.Clamp01(currentTimestamp / lastTimestamp);
+
+        Vector3 scale = child.localScale;
+        scale.x = progress;
+        child.localScale = scale;
     }
 }
