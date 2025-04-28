@@ -94,6 +94,11 @@ public class playbackInitializer : MonoBehaviour
         }
 
     }
+    private void OnApplicationQuit()
+    {
+        CancelProcessing();
+    }
+
     #region Functions for starting, ending & communicating with python scripts
     void StartPythonProcess(string scriptName, string songName)
     {
@@ -164,11 +169,32 @@ public class playbackInitializer : MonoBehaviour
     {
         if (pythonProcess != null && !pythonProcess.HasExited)
         {
-            pythonProcess.Kill();
-            pythonProcess = null;
-            UnityEngine.Debug.Log("Python process terminated.");
+            try
+            {
+                int pid = pythonProcess.Id;
+
+                // Kill the cmd.exe AND its children (like python.exe)
+                Process killer = new Process();
+                killer.StartInfo.FileName = "taskkill";
+                killer.StartInfo.Arguments = $"/PID {pid} /T /F";
+                killer.StartInfo.CreateNoWindow = true;
+                killer.StartInfo.UseShellExecute = false;
+                killer.Start();
+                killer.WaitForExit();
+
+                UnityEngine.Debug.Log("Successfully killed Python process tree.");
+            }
+            catch (Exception ex)
+            {
+                UnityEngine.Debug.LogError($"Error killing process tree: {ex.Message}");
+            }
+            finally
+            {
+                pythonProcess = null;
+            }
         }
     }
+
 
     void GetInfo()
     {
