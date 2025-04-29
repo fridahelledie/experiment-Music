@@ -26,7 +26,7 @@ public class LightControlVisualizer : FeatureVisualizer
         targetRotation = Quaternion.Euler(Vector3.Lerp(startRotation, endRotation, value));
 
         // Interpolate light intensity
-        targetIntensity = Mathf.Lerp(minIntensity, maxIntensity, value);
+        targetIntensity = Mathf.Lerp(minIntensity, maxIntensity, value * 100);
     }
 
     void Update()

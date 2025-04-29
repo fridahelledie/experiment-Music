@@ -7,10 +7,10 @@ public class CirclePosVisualizer : FeatureVisualizer
     [SerializeField] private float minDistance = 0.5f;
     [SerializeField] private float offsetAtMax = 2f;
 
-    
-    [SerializeField] Material colorMaterial;
 
     private Renderer rendr;
+    private Material instanceMaterial;
+    private Color originalColor;
 
     private Vector3 initialPosition;
     private Vector3 targetPosition;
@@ -23,7 +23,16 @@ public class CirclePosVisualizer : FeatureVisualizer
         initialPosition = new Vector3(Mathf.Cos(radians), Mathf.Sin(radians), 0);
         transform.localPosition = initialPosition * minDistance;
         targetPosition = initialPosition * minDistance;
+
         rendr = GetComponent<Renderer>();
+        if (rendr != null)
+        {
+            // Create an instance of the material so we don’t modify the shared one
+            instanceMaterial = new Material(rendr.material);
+            rendr.material = instanceMaterial;
+            originalColor = instanceMaterial.color;
+        }
+
     }
 
     public override void UpdateFeature(float value)
@@ -33,21 +42,14 @@ public class CirclePosVisualizer : FeatureVisualizer
         float distance = Mathf.Lerp(minDistance, offsetAtMax, value);
         targetPosition = initialPosition * distance;
     }
+
     void UpdateMaterial(float value)
     {
-        if (rendr != null)
+        if (instanceMaterial != null)
         {
-            Color orgColor = rendr.material.color;
-            // material converted to hsv so we can manipulate brightness later
-            Color.RGBToHSV(orgColor, out float h, out float s, out float v);
-
-            //here the value is changed depending on the value
-            float newSaturation = Mathf.Lerp(0f, 1f, value); // 0 = grayscale, 1 = full color
-
-            //converted back to RGB to be used as the color yay
-            Color newColor = Color.HSVToRGB(h, newSaturation, v);
-
-            rendr.material.color = newColor;
+            // Lerp between gray and original color based on value
+            Color newColor = Color.Lerp(Color.gray, originalColor, value);
+            instanceMaterial.color = newColor;
         }
     }
 
