@@ -471,7 +471,6 @@ MonoBehaviour:
   lerpSpeed: 0.2
   minDistance: 1
   offsetAtMax: 2
-  colorMaterial: {fileID: 2100000, guid: 5063b1dd60d42624197847abc95b0dc7, type: 2}
 --- !u!1001 &185599437
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -582,7 +581,6 @@ MonoBehaviour:
   lerpSpeed: 0.2
   minDistance: 1
   offsetAtMax: 2
-  colorMaterial: {fileID: 2100000, guid: 6879c2b76041c214aa28955390e1c044, type: 2}
 --- !u!1001 &221314438
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6185,7 +6183,6 @@ MonoBehaviour:
   lerpSpeed: 0.2
   minDistance: 1
   offsetAtMax: 2
-  colorMaterial: {fileID: 2100000, guid: 2607d762ac514324793aac15a9f35335, type: 2}
 --- !u!1 &518904742
 GameObject:
   m_ObjectHideFlags: 0
@@ -6545,12 +6542,12 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: 314fd9ad5c9260840990feb0136ed205,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.008
+      value: -0.002
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 314fd9ad5c9260840990feb0136ed205,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.18
+      value: 0.1148
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 314fd9ad5c9260840990feb0136ed205,
         type: 3}
@@ -6852,7 +6849,6 @@ MonoBehaviour:
   lerpSpeed: 0.2
   minDistance: 1
   offsetAtMax: 2
-  colorMaterial: {fileID: 2100000, guid: c7374c81e39308c46b2cac9ca4af5d35, type: 2}
 --- !u!1 &896456260
 GameObject:
   m_ObjectHideFlags: 0
@@ -6996,7 +6992,6 @@ MonoBehaviour:
   lerpSpeed: 0.2
   minDistance: 1
   offsetAtMax: 2
-  colorMaterial: {fileID: 2100000, guid: bf7422a8e0ac47d4096e05c3369e288a, type: 2}
 --- !u!1001 &1003955338
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7107,7 +7102,6 @@ MonoBehaviour:
   lerpSpeed: 0.2
   minDistance: 1
   offsetAtMax: 2
-  colorMaterial: {fileID: 2100000, guid: 115729b9cc26f384eb6044943490a8fe, type: 2}
 --- !u!1 &1145690287
 GameObject:
   m_ObjectHideFlags: 0
@@ -7282,7 +7276,6 @@ MonoBehaviour:
   lerpSpeed: 0.2
   minDistance: 1
   offsetAtMax: 2
-  colorMaterial: {fileID: 2100000, guid: c8f8cbc4e07c9274eac4bbb2f396cb4c, type: 2}
 --- !u!1001 &1304882786
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7632,7 +7625,6 @@ MonoBehaviour:
   lerpSpeed: 0.2
   minDistance: 1
   offsetAtMax: 2
-  colorMaterial: {fileID: 2100000, guid: e2637c8e8ad1f87439cf357c14932f4f, type: 2}
 --- !u!1001 &1580426523
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7743,7 +7735,6 @@ MonoBehaviour:
   lerpSpeed: 0.2
   minDistance: 1
   offsetAtMax: 2
-  colorMaterial: {fileID: 2100000, guid: e573c37c367c7d44698b4e1e492834c2, type: 2}
 --- !u!1 &1711020985
 GameObject:
   m_ObjectHideFlags: 0
@@ -8036,7 +8027,6 @@ MonoBehaviour:
   lerpSpeed: 0.2
   minDistance: 1
   offsetAtMax: 2
-  colorMaterial: {fileID: 2100000, guid: 760f5485026ad69459ea8662e9415c1e, type: 2}
 --- !u!1001 &1833750500
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8316,7 +8306,6 @@ MonoBehaviour:
   lerpSpeed: 0.2
   minDistance: 1
   offsetAtMax: 2
-  colorMaterial: {fileID: 2100000, guid: d7384be285d16a041993fb5f43af9fc3, type: 2}
 --- !u!1001 &1993951728
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8422,7 +8411,6 @@ MonoBehaviour:
   lerpSpeed: 0.2
   minDistance: 1
   offsetAtMax: 2
-  colorMaterial: {fileID: 2100000, guid: 478576d7a44151a45af11ffab6d1660c, type: 2}
 --- !u!1 &2050871654
 GameObject:
   m_ObjectHideFlags: 0
