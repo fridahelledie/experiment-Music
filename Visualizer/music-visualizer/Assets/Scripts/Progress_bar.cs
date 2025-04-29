@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Progress_bar : MonoBehaviour
 {
     private FeaturePlayback featurePlayback;
     [SerializeField] private Transform child;
     private float lastTimestamp; //here the last timestamp in json should be stored
-
+    private Image childImage;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,12 +16,17 @@ public class Progress_bar : MonoBehaviour
 
         if (featurePlayback != null)
         {
-            float lastTimestamp = featurePlayback.GetLastTimestamp();
+            lastTimestamp = featurePlayback.GetLastTimestamp();
 
             // uses last time stamp to scale the bar in x
             Vector3 newScale = transform.localScale;
-            newScale.x = lastTimestamp * 0.1f;  // optional multiplier
+            newScale.x = lastTimestamp /100f;  // optional multiplier
             transform.localScale = newScale;
+
+            if (child != null)
+            {
+                childImage = child.GetComponent<Image>();
+            }
         }
     }
 
@@ -50,10 +56,7 @@ public class Progress_bar : MonoBehaviour
         if (child == null || lastTimestamp <= 0)
             return;
 
-        float progress = Mathf.Clamp01(currentTimestamp / lastTimestamp);
-
-        Vector3 scale = child.localScale;
-        scale.x = progress;
-        child.localScale = scale;
+        float progress = Mathf.Clamp01(currentTimestamp / (lastTimestamp / 100f));
+        childImage.fillAmount = progress;
     }
 }

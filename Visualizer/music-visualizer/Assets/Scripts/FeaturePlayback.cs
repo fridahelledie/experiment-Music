@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using Newtonsoft.Json;
+using System.Globalization;
 
 public class FeaturePlayback : MonoBehaviour
 {
@@ -53,13 +54,19 @@ public class FeaturePlayback : MonoBehaviour
     // Called each time OLTW-aligner sends a new alignment step
     private void OnAlignmentStepReceived(string message)
     {
-        if (float.TryParse(message, out float stepFloat))
+        Debug.Log("Received message from Python: " + message);
+        if (float.TryParse(message, NumberStyles.Float, CultureInfo.InvariantCulture, out float stepFloat))
         {
             int stepIndex = Mathf.FloorToInt(stepFloat);
+            Debug.Log($"Parsed step index: {stepIndex} (last was {lastStepIndex})");
             if (stepIndex != lastStepIndex && stepIndex >= 0 && stepIndex < featureData.Count)
             {
                 lastStepIndex = stepIndex;
                 ApplyFeatureStep(featureData[stepIndex]);
+            }
+            else
+            {
+                Debug.LogWarning("Failed to parse message from Python: " + message);
             }
         }
     }
@@ -71,7 +78,7 @@ public class FeaturePlayback : MonoBehaviour
             entry.chroma[2], entry.chroma[3], entry.chroma[4], entry.chroma[5], entry.chroma[6],
             entry.chroma[7], entry.chroma[8]
         );
-
+        print("chroma features");
         OnsetFeatures onsetFeature = new OnsetFeatures(entry.onset);
         AmplitudeFeature amplitudeFeature = new AmplitudeFeature(entry.amplitude);
         if (IsBeatDetected(entry.beat_times))
