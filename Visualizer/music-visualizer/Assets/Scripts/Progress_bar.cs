@@ -8,6 +8,7 @@ public class Progress_bar : MonoBehaviour
     private FeaturePlayback featurePlayback;
     [SerializeField] private Transform child;
     private float lastTimestamp; //here the last timestamp in json should be stored
+    private int featureCount;
     private Image childImage;
     // Start is called before the first frame update
     void Start()
@@ -16,12 +17,15 @@ public class Progress_bar : MonoBehaviour
 
         if (featurePlayback != null)
         {
+            /*
             lastTimestamp = featurePlayback.GetLastTimestamp();
 
             // uses last time stamp to scale the bar in x
             Vector3 newScale = transform.localScale;
             newScale.x = lastTimestamp /100f;  // optional multiplier
             transform.localScale = newScale;
+            */
+            featureCount = Mathf.Max(1, featurePlayback.GetLastTimestamp()); // avoid divide by zero
 
             if (child != null)
             {
@@ -44,19 +48,25 @@ public class Progress_bar : MonoBehaviour
     //current timestamp is parse into a float toupdate the progress bar over time
     private void OnAlignmentStepReceived(string message)
     {
-        if (float.TryParse(message, out float currentTimestamp))
+        if (float.TryParse(message, out float currentIndexFloat))
         {
-            UpdateProgress(currentTimestamp);
+            // Unity can't parse the alignment step messages as ints so we need to get them into a float first
+            int currentIndex = (int)currentIndexFloat;
+            UpdateProgress(currentIndex);
+        }
+        else
+        {
+            Debug.LogWarning($"Could not parse step index from message: {message}");
         }
     }
 
     //Here the updating happens
-    private void UpdateProgress(float currentTimestamp)
+    private void UpdateProgress(int currentIndex)
     {
-        if (child == null || lastTimestamp <= 0)
+        if (childImage == null || featureCount <= 1)
             return;
 
-        float progress = Mathf.Clamp01(currentTimestamp / (lastTimestamp / 100f));
+        float progress = Mathf.Clamp01((float)currentIndex / (featureCount - 1));
         childImage.fillAmount = progress;
     }
 }
