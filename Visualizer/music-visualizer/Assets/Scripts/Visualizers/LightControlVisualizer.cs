@@ -21,6 +21,7 @@ public class LightControlVisualizer : FeatureVisualizer
 
     public override void UpdateFeature(float value)
     {
+        float boostedValue = Mathf.Clamp01(value * 50f);
         // Interpolate between start and end rotation
         targetRotation = Quaternion.Euler(Vector3.Lerp(startRotation, endRotation, value));
 

@@ -2,35 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class OnsetScale : FeatureVisualizer
 {
-    
-    [SerializeField] Vector3 scaleMax;
-    private Vector3 scaleMin;
-    private Vector3 targetScale;
-    [SerializeField] float lerpSpeed = 0.2f;
-   
-
-    private void Awake()
-    {
-
-        scaleMin = transform.localScale;
-        targetScale = scaleMin;
-    }
+    [SerializeField] float lowZScale = 1f;   // Z scale when value is below 0.5
+    [SerializeField] float highZScale = 3f;  // Z scale when value is 0.5 or above
 
     public override void UpdateFeature(float value)
     {
-
-        targetScale = Vector3.Lerp(scaleMin, scaleMax, value);
-    }
-    void Start()
-    {
-        
-    }
-
-    void Update()
-    {
-        transform.localScale = Vector3.Lerp(transform.localScale, targetScale, lerpSpeed * Time.deltaTime);
+        float targetZ = (value >= 0.5f) ? highZScale : lowZScale;
+        Vector3 currentScale = transform.localScale;
+        transform.localScale = new Vector3(currentScale.x, currentScale.y, targetZ);
     }
 }
