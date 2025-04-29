@@ -18,6 +18,8 @@ duration = 40
 previous = None
 runCount = 1
 maxRunCount = 3
+max_matrix_size = 1024
+matrix_offset = 0
 
 #variables for chroma features
 n_fft = 1024  #window length
@@ -32,7 +34,7 @@ reference_audio_path = "03BarberSonata_1.wav"
 reference_audio, sr = librosa.load(reference_audio_path)
 
 #Input audio
-input_audio_path = "03BarberSonata_2.wav"
+input_audio_path = "03BarberSonata_1.wav"
 input_audio, sr = librosa.load(input_audio_path, sr=sr) #forces matching sampling rates between reference and input audio
 
 #DLNCO
@@ -118,13 +120,12 @@ def generate_reference_features(audio, buffer_size):
 
 
 def online_tw(live_features, ref_features, _D, _P, _t, _j):
-    global previous, runCount
+    global previous, runCount, max_matrix_size, matrix_offset
     D = np.append(_D, np.full(shape=(max(0, live_features.shape[1] - _D.shape[0]) , _D.shape[1]), fill_value=np.inf), axis=0)
 
     P = _P
     t = _t
     j = _j
-
 
     #initialize new rows diagonal values (cost values)
     if t == 0 and live_features.shape[1] > 0 and D.shape[0] > 0:
@@ -150,7 +151,7 @@ def online_tw(live_features, ref_features, _D, _P, _t, _j):
 
         #HOT FIX that makes sure that we never make an unnecessary column followed imidietly by a row or vice versa
         if previous != decision and decision != "Both" and previous != None and previous != "Both":
-            print(f"{previous} {P[-1]} {decision}")
+            # print(f"{previous} {P[-1]} {decision}")
             P.pop(-1)
             previous = "Both"
         #HOT FIX END
@@ -263,6 +264,7 @@ def simulate_live_audio_input(audio_path, buffer_size, ref):
     return D,P
 
 def simulate_live_audio_input_new(live_audio, buffer_size, ref_features):
+    global matrix_offset
     # live_audio, sr_ = librosa.load(audio_path, sr=sr, duration=duration) # Force same sr as reference
 
     #Declare variables
@@ -313,7 +315,10 @@ def simulate_live_audio_input_new(live_audio, buffer_size, ref_features):
 
         #run online time warp
         t, j = P[-1]
+        print(f"{t}, {j}")
         D, P = online_tw(live_features, ref_features, D, P, t, j)
+
+
 
     #Debugging
     if (live_features.shape == ref_features.shape):
@@ -323,28 +328,7 @@ def simulate_live_audio_input_new(live_audio, buffer_size, ref_features):
     #Returns cost matrix and alignment path
     return D,P
 
-#Remove later
-def simulate_live_chroma_input(precomputed_chroma, ref, chunk_size_frames):
-    live_chroma = np.empty(shape=(ref.shape[0], 0))
 
-    # Online TW variables
-    P = [(0, 0)]
-    t, j = 0, 0
-    D = np.full((0, ref.shape[1]), np.inf)
-
-    # Simulate feeding chroma features chunk-by-chunk
-    for frame_start in range(0, precomputed_chroma.shape[1], chunk_size_frames):
-        frame_end = frame_start + chunk_size_frames
-        chroma_chunk = precomputed_chroma[:, frame_start:frame_end]
-
-        live_chroma = np.append(live_chroma, chroma_chunk, axis=1)
-
-        # Run online TW
-        t, j = P[-1]
-        D, P = online_tw(live_chroma, ref, D, P, t, j)
-
-    #show_dtw(D, np.array(P))
-    return D,P
 def full_offline_dtw(reference_chroma, live_chroma):
     # Compute cost matrix using cosine distance
     cost_matrix = np.zeros((live_chroma.shape[1], reference_chroma.shape[1]))
