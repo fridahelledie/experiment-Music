@@ -3,6 +3,7 @@ using UnityEngine;
 using System.IO;
 using Newtonsoft.Json;
 using System.Globalization;
+using System.Linq;
 
 public class FeaturePlayback : MonoBehaviour
 {
@@ -111,4 +112,9 @@ public class FeaturePlayback : MonoBehaviour
         }
         return 0;
     }
+    public List<float> GetAmplitudes()
+    {
+        return featureData.Select(f => f.amplitude).ToList();
+    }
+
 }
