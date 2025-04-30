@@ -11,6 +11,8 @@ public class BandwithOpacity : FeatureVisualizer
 
     private float targetValue = 0f;
     private float currentBump = 0f;
+
+    
     void Awake()
     {
         rendr = GetComponent<Renderer>();
@@ -27,6 +29,7 @@ public class BandwithOpacity : FeatureVisualizer
     {
         
         targetValue = value;
+        Debug.Log("Received chroma value: " + value);
     }
 
 
