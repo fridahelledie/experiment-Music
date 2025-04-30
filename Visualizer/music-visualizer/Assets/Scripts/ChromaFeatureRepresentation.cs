@@ -22,7 +22,8 @@ public class ChromaFeatureRepresentation : MonoBehaviour
 
     [SerializeField] FeatureVisualizer Amplitude;
 
-    
+    [SerializeField] FeatureVisualizer MaxChroma;
+
     [SerializeField] BeatVisualzer beatVisualizer;
 
 
@@ -34,9 +35,7 @@ public class ChromaFeatureRepresentation : MonoBehaviour
         FeaturePlayback.OnsetFeatureRecieved += OnsetFeatureRecieved;
         FeaturePlayback.AmplitudeFeatureRecieved += AmplitudeFeatureReceived;
         FeaturePlayback.OnBeatDetected += BeatDetected;
-
-
-
+        FeaturePlayback.OnMaxChromaRecieved += MaxChromaRecieved;
     }
 
     void ChromaFeatureRecieved(ChromaFeature chromaFeature)
@@ -122,11 +121,19 @@ public class ChromaFeatureRepresentation : MonoBehaviour
     }
     void BeatDetected()
     {
-        Debug.Log("Beat detected!"); // Debug log to confirm the event is triggered
+       
 
         if (beatVisualizer != null)
         {
             beatVisualizer.TriggerBeatEffect();
+        }
+    }
+
+    void MaxChromaRecieved(float maxValue)
+    {
+        if (MaxChroma != null)
+        {
+            MaxChroma.UpdateFeature(maxValue);
         }
     }
 }

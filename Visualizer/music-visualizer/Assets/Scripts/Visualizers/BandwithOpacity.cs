@@ -4,48 +4,43 @@ using UnityEngine;
 
 public class BandwithOpacity : FeatureVisualizer
 {
-    [SerializeField] private Material mat;
-    private Renderer rendr;
+    [SerializeField] private float lerpSpeed = 5f;
 
-    private float targetValue = 1f; // Chromatic strength driving opacity - Has to be changed to the more than 2 chromatic shit
-                                    
+    private Renderer rendr;
+    private Material instanceMaterial;
+
+    private float targetValue = 0f;
+    private float currentBump = 0f;
     void Awake()
     {
-        //Getting material
         rendr = GetComponent<Renderer>();
-        mat = rendr.material; 
-        EnableTransparency();
+
+        if (rendr != null)
+        {
+            // Create instance material
+            instanceMaterial = new Material(rendr.material);
+            rendr.material = instanceMaterial;
+        }
     }
 
     public override void UpdateFeature(float value)
     {
-        targetValue = value; // has to be changed to if statement
+        
+        targetValue = value;
     }
-
 
 
     void Update()
     {
-        if (mat != null)
-        {
-            Color color = mat.color;
-            color.a = Mathf.Lerp(0f, 1f, targetValue); // Fade alpha based on chroma value, has to be changed 
-            mat.color = color;
-        }
+        if (instanceMaterial == null) return;
+
+        // If chroma max is 2 or more, bumpStrength should be 1, else 0
+        float targetBump = (targetValue >= 2f) ? 1f : 0f;
+
+        // Smooth transition (optional)
+        currentBump = Mathf.Lerp(currentBump, targetBump, lerpSpeed * Time.deltaTime);
+        instanceMaterial.SetFloat("_BumpScale", currentBump);
     }
 
-    void EnableTransparency()
-    {
-        if (mat != null)
-        {
-            mat.SetFloat("_Mode", 3); // Set Standard Shader mode to Transparent
-            mat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-            mat.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-            mat.SetInt("_ZWrite", 0);
-            mat.DisableKeyword("_ALPHATEST_ON");
-            mat.EnableKeyword("_ALPHABLEND_ON");
-            mat.DisableKeyword("_ALPHAPREMULTIPLY_ON");
-            mat.renderQueue = 3000;
-        }
-    }
+
 }

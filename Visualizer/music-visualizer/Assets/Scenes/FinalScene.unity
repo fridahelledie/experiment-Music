@@ -6545,7 +6545,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 650184533}
-  - component: {fileID: 650184534}
   m_Layer: 0
   m_Name: Bandwidth
   m_TagString: Untagged
@@ -6576,19 +6575,6 @@ Transform:
   - {fileID: 1364351945}
   m_Father: {fileID: 1145690289}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &650184534
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 650184532}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e1ee92958f21044f9dcbb17b8c494f2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mat: {fileID: 0}
 --- !u!1001 &817716804
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7299,7 +7285,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e1ee92958f21044f9dcbb17b8c494f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mat: {fileID: 0}
+  lerpSpeed: 5
 --- !u!1 &1145690287
 GameObject:
   m_ObjectHideFlags: 0
@@ -7343,6 +7329,7 @@ MonoBehaviour:
   G_sharp: {fileID: 0}
   Onset: {fileID: 474947710}
   Amplitude: {fileID: 1719294437}
+  MaxChroma: {fileID: 1304882789}
   beatVisualizer: {fileID: 1711020987}
 --- !u!4 &1145690289
 Transform:
@@ -7585,7 +7572,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e1ee92958f21044f9dcbb17b8c494f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mat: {fileID: 0}
+  lerpSpeed: 5
 --- !u!1001 &1316528507
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7697,7 +7684,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e1ee92958f21044f9dcbb17b8c494f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mat: {fileID: 0}
+  lerpSpeed: 5
 --- !u!1 &1341948806
 GameObject:
   m_ObjectHideFlags: 0
@@ -7768,6 +7755,7 @@ MonoBehaviour:
   G_sharp: {fileID: 1003955341}
   Onset: {fileID: 0}
   Amplitude: {fileID: 223624791}
+  MaxChroma: {fileID: 0}
   beatVisualizer: {fileID: 0}
 --- !u!1 &1364351941
 GameObject:
@@ -8679,7 +8667,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e1ee92958f21044f9dcbb17b8c494f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mat: {fileID: 0}
+  lerpSpeed: 5
 --- !u!1001 &1977874014
 PrefabInstance:
   m_ObjectHideFlags: 0
