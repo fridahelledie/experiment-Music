@@ -10,6 +10,13 @@ public class Progress_bar : MonoBehaviour
     private float lastTimestamp; //here the last timestamp in json should be stored
     private int featureCount;
     private Image childImage;
+
+    [SerializeField] private LineRenderer amplitudeLine;
+    [SerializeField] private Vector2 lineSize = new Vector2(5f, 1f); // width, height of the line
+    private List<float> amplitudes; // amplitude history from featureData
+    private Vector3[] fullLinePositions; // stored waveform data
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -31,6 +38,9 @@ public class Progress_bar : MonoBehaviour
             {
                 childImage = child.GetComponent<Image>();
             }
+            // Get amplitudes from featurePlayback
+            amplitudes = featurePlayback.GetAmplitudes();
+            SetupAmplitudeLine();
         }
     }
 
@@ -68,5 +78,34 @@ public class Progress_bar : MonoBehaviour
 
         float progress = Mathf.Clamp01((float)currentIndex / (featureCount - 1));
         childImage.fillAmount = progress;
+
+        // Draw the amplitude line up to current index
+        if (amplitudeLine != null && fullLinePositions != null && currentIndex < fullLinePositions.Length)
+        {
+            amplitudeLine.positionCount = currentIndex + 1;
+            for (int i = 0; i <= currentIndex; i++)
+            {
+                amplitudeLine.SetPosition(i, fullLinePositions[i]);
+            }
+        }
     }
+    void SetupAmplitudeLine()
+    {
+        if (amplitudeLine == null || amplitudes == null || amplitudes.Count == 0)
+            return;
+
+        fullLinePositions = new Vector3[amplitudes.Count];
+
+        for (int i = 0; i < amplitudes.Count; i++)
+        {
+            float x = ((float)i / (amplitudes.Count - 1)) * lineSize.x;
+            float y = amplitudes[i] * lineSize.y;
+            fullLinePositions[i] = new Vector3(x, y, 0);
+        }
+
+        // Start with just one point
+        amplitudeLine.positionCount = 1;
+        amplitudeLine.SetPosition(0, fullLinePositions[0]);
+    }
+
 }

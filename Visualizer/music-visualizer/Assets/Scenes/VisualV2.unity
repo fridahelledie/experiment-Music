@@ -150,13 +150,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 47573027}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -4}
+  m_LocalRotation: {x: -0, y: -0.99839115, z: -0, w: 0.056702737}
+  m_LocalPosition: {x: 1.71, y: 0, z: -5.67}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1337943216}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: -173.499, z: 0}
 --- !u!114 &47573029
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -529,8 +529,6 @@ MonoBehaviour:
   lerpSpeed: 0.5
   minDistance: 2
   offsetAtMax: 3
-  blackMaterial: {fileID: 2100000, guid: d1fc7470f418fb44086fde50330febbb, type: 2}
-  colorMaterial: {fileID: 2100000, guid: 5063b1dd60d42624197847abc95b0dc7, type: 2}
 --- !u!1 &262142938
 GameObject:
   m_ObjectHideFlags: 0
@@ -653,8 +651,6 @@ MonoBehaviour:
   lerpSpeed: 0.5
   minDistance: 2
   offsetAtMax: 3
-  blackMaterial: {fileID: 2100000, guid: d1fc7470f418fb44086fde50330febbb, type: 2}
-  colorMaterial: {fileID: 2100000, guid: c7374c81e39308c46b2cac9ca4af5d35, type: 2}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -1033,8 +1029,6 @@ MonoBehaviour:
   featureType: 1
   lerpSpeed: 0.2
   offsetAtMax: {x: 0, y: 2, z: 0}
-  scaleMax: {x: 4, y: 0, z: 4}
-  blackMaterial: {fileID: 2100000, guid: d1fc7470f418fb44086fde50330febbb, type: 2}
   colorMaterial: {fileID: 2100000, guid: 2c9dfeae80bb5b245a310cf446522208, type: 2}
 --- !u!1 &737517267
 GameObject:
@@ -1158,8 +1152,6 @@ MonoBehaviour:
   lerpSpeed: 0.5
   minDistance: 2
   offsetAtMax: 3
-  blackMaterial: {fileID: 2100000, guid: d1fc7470f418fb44086fde50330febbb, type: 2}
-  colorMaterial: {fileID: 2100000, guid: 6879c2b76041c214aa28955390e1c044, type: 2}
 --- !u!1 &773071576
 GameObject:
   m_ObjectHideFlags: 0
@@ -1282,8 +1274,6 @@ MonoBehaviour:
   lerpSpeed: 0.5
   minDistance: 2
   offsetAtMax: 3
-  blackMaterial: {fileID: 2100000, guid: d1fc7470f418fb44086fde50330febbb, type: 2}
-  colorMaterial: {fileID: 2100000, guid: 2607d762ac514324793aac15a9f35335, type: 2}
 --- !u!1 &782864479
 GameObject:
   m_ObjectHideFlags: 0
@@ -1406,8 +1396,6 @@ MonoBehaviour:
   lerpSpeed: 0.5
   minDistance: 2
   offsetAtMax: 3
-  blackMaterial: {fileID: 2100000, guid: d1fc7470f418fb44086fde50330febbb, type: 2}
-  colorMaterial: {fileID: 2100000, guid: d7384be285d16a041993fb5f43af9fc3, type: 2}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0
@@ -1788,8 +1776,6 @@ MonoBehaviour:
   lerpSpeed: 0.5
   minDistance: 2
   offsetAtMax: 3
-  blackMaterial: {fileID: 2100000, guid: d1fc7470f418fb44086fde50330febbb, type: 2}
-  colorMaterial: {fileID: 2100000, guid: 760f5485026ad69459ea8662e9415c1e, type: 2}
 --- !u!1 &1095495070
 GameObject:
   m_ObjectHideFlags: 0
@@ -2046,8 +2032,6 @@ MonoBehaviour:
   lerpSpeed: 0.5
   minDistance: 2
   offsetAtMax: 3
-  blackMaterial: {fileID: 2100000, guid: d1fc7470f418fb44086fde50330febbb, type: 2}
-  colorMaterial: {fileID: 2100000, guid: e2637c8e8ad1f87439cf357c14932f4f, type: 2}
 --- !u!1 &1289582708
 GameObject:
   m_ObjectHideFlags: 0
@@ -2170,8 +2154,6 @@ MonoBehaviour:
   lerpSpeed: 0.5
   minDistance: 2
   offsetAtMax: 3
-  blackMaterial: {fileID: 2100000, guid: d1fc7470f418fb44086fde50330febbb, type: 2}
-  colorMaterial: {fileID: 2100000, guid: 478576d7a44151a45af11ffab6d1660c, type: 2}
 --- !u!1 &1329895439
 GameObject:
   m_ObjectHideFlags: 0
@@ -2294,8 +2276,6 @@ MonoBehaviour:
   lerpSpeed: 0.5
   minDistance: 2
   offsetAtMax: 3
-  blackMaterial: {fileID: 2100000, guid: d1fc7470f418fb44086fde50330febbb, type: 2}
-  colorMaterial: {fileID: 2100000, guid: 115729b9cc26f384eb6044943490a8fe, type: 2}
 --- !u!1 &1337943214
 GameObject:
   m_ObjectHideFlags: 0
@@ -2337,18 +2317,7 @@ MonoBehaviour:
   F_sharp: {fileID: 149370902}
   G: {fileID: 1411293503}
   G_sharp: {fileID: 1329895445}
-  OnsetA: {fileID: 609415269}
-  OnsetA1: {fileID: 0}
-  OnsetB: {fileID: 0}
-  OnsetC: {fileID: 0}
-  OnsetC1: {fileID: 0}
-  OnsetD: {fileID: 0}
-  OnsetD1: {fileID: 0}
-  OnsetE: {fileID: 0}
-  OnsetF: {fileID: 0}
-  OnsetF1: {fileID: 0}
-  OnsetG: {fileID: 0}
-  OnsetG1: {fileID: 0}
+  Onset: {fileID: 0}
   Amplitude: {fileID: 47573029}
   beatVisualizer: {fileID: 1576047985}
 --- !u!4 &1337943216
@@ -2654,8 +2623,6 @@ MonoBehaviour:
   lerpSpeed: 0.5
   minDistance: 2
   offsetAtMax: 3
-  blackMaterial: {fileID: 2100000, guid: d1fc7470f418fb44086fde50330febbb, type: 2}
-  colorMaterial: {fileID: 2100000, guid: e573c37c367c7d44698b4e1e492834c2, type: 2}
 --- !u!1 &1576047984
 GameObject:
   m_ObjectHideFlags: 0
@@ -2826,8 +2793,6 @@ MonoBehaviour:
   lerpSpeed: 0.5
   minDistance: 2
   offsetAtMax: 3
-  blackMaterial: {fileID: 2100000, guid: d1fc7470f418fb44086fde50330febbb, type: 2}
-  colorMaterial: {fileID: 2100000, guid: c8f8cbc4e07c9274eac4bbb2f396cb4c, type: 2}
 --- !u!1 &1660191278
 GameObject:
   m_ObjectHideFlags: 0
@@ -2950,8 +2915,6 @@ MonoBehaviour:
   lerpSpeed: 0.5
   minDistance: 2
   offsetAtMax: 3
-  blackMaterial: {fileID: 2100000, guid: d1fc7470f418fb44086fde50330febbb, type: 2}
-  colorMaterial: {fileID: 2100000, guid: bf7422a8e0ac47d4096e05c3369e288a, type: 2}
 --- !u!1 &1760207483
 GameObject:
   m_ObjectHideFlags: 0
