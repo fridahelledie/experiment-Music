@@ -21,6 +21,9 @@ public class FeaturePlayback : MonoBehaviour
     public delegate void BeatDetected();
     public static BeatDetected OnBeatDetected;
 
+    public delegate void MaxChromaRecieved(float maxChroma);
+    public static MaxChromaRecieved OnMaxChromaRecieved;
+
     [System.Serializable]
     public class FeatureEntry
     {
@@ -89,6 +92,9 @@ public class FeaturePlayback : MonoBehaviour
         onChromaFeatureRecieved?.Invoke(chromaFeature);
         if (entry.onset > 0.3f) OnsetFeatureRecieved?.Invoke(onsetFeature);
         AmplitudeFeatureRecieved?.Invoke(amplitudeFeature);
+
+        float maxChroma = Mathf.Max(entry.chroma);
+        OnMaxChromaRecieved?.Invoke(maxChroma);
     }
 
     private bool IsBeatDetected(float? beatTime)
