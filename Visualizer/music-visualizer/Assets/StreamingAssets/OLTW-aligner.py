@@ -31,7 +31,7 @@ sim_audio_path = os.path.join("audio", SIMULATED_INPUT_NAME)
 
 # Load reference audio and chroma
 y_ref, sr = librosa.load(ref_audio_path, sr=None)
-ref_chroma = librosa.feature.chroma_stft(y=y_ref, sr=sr, n_fft=N_FFT, hop_length=HOP_LENGTH)
+ref_chroma = generate_reference_features(y_ref, BUFFER_SIZE)
 
 # Client connection
 if not Client.connect():
@@ -111,7 +111,14 @@ def online_tw():
             Client.send_data(f"{j:.3f}")  # Send alignment progress to Unity
 
 def calculate_chroma_chunk(audio_chunk):
-    return librosa.feature.chroma_stft(y=audio_chunk, sr=sr, n_fft=N_FFT, hop_length=HOP_LENGTH)
+    return librosa.feature.chroma_stft(
+        y=audio_chunk,
+        sr=sr,
+        n_fft=n_fft,
+        hop_length=hop_length,
+        center=False
+    )
+
 
 def simulate_input(audio_path):
     y_live, _ = librosa.load(audio_path, sr=sr)
@@ -134,6 +141,46 @@ def mic_callback(indata, frames, time, status):
     audio_chunk = indata[:, 0] if indata.ndim > 1 else indata
     chroma = calculate_chroma_chunk(audio_chunk)
     append_and_process_chroma(chroma)
+
+def generate_reference_features(audio, buffer_size):
+    # Declare variables
+    features = np.empty(shape=(12, 0))  # Declares an empty array for keeping the features as they are generated
+
+    # History buffer for smoother chroma computation
+    history_buffer = np.zeros(buffer_size)
+
+    for frame_start in range(0, len(audio), buffer_size):
+        # reads buffer_sizer amount of frames
+        audio_chunk = audio[frame_start: frame_start + buffer_size]
+
+        # Stop when file ends (Safety)
+        if len(audio_chunk) == 0:
+            break
+
+        # If stereo, convert to mono
+        if audio_chunk.ndim > 1:
+            audio_chunk = audio_chunk.mean(axis=1)
+
+        # Concatenate with previous buffer to maintain continuity
+        padded_audio_chunk = np.concatenate((history_buffer[-buffer_size:], audio_chunk))
+
+        if len(padded_audio_chunk) < n_fft:
+            continue  # skip until we have enough audio
+
+        # Compute chroma for this chunk
+        feature_chunk = calculate_chroma_chunk(padded_audio_chunk)
+
+        # Keep only chroma frames that came from the *new* audio (excluding overlap frames)
+        new_frames = (len(audio_chunk) // hop_length)
+        feature_chunk = feature_chunk[:, -new_frames:] if feature_chunk.shape[1] >= new_frames else feature_chunk
+
+        # Update history
+        history_buffer = np.concatenate((history_buffer, audio_chunk))[-n_fft:]
+
+        # Append to total live chroma
+        features = np.append(features, feature_chunk, axis=1)
+
+    return features
 
 # =============== Main ===============
 try:
