@@ -31,7 +31,6 @@ sim_audio_path = os.path.join("audio", SIMULATED_INPUT_NAME)
 
 # Load reference audio and chroma
 y_ref, sr = librosa.load(ref_audio_path, sr=None)
-ref_chroma = generate_reference_features(y_ref, BUFFER_SIZE)
 
 # Client connection
 if not Client.connect():
@@ -45,7 +44,7 @@ audio_queue = queue.Queue()
 # DTW tracking
 P = [(0, 0)]
 t, j = 0, 0
-D = np.full((1, ref_chroma.shape[1]), np.inf)
+d = {}
 
 # Previous direction tracking
 previous = None
@@ -77,38 +76,48 @@ def get_inc(t, j, D):
     return best_move
 
 def online_tw():
-    global t, j, P, D, previous, runCount, live_chroma
+    global t, j, P, d, previous, runCount, live_chroma
     t, j = P[-1]
 
     while t < live_chroma.shape[1] - 1 and j < ref_chroma.shape[1]:
-        decision = get_inc(t, j, D)
+        # initialize new rows diagonal values (cost values)
+        if t == 0 and live_features.shape[1] > 0:
+            d[(t, j)] = EvaluatePathCost(t, j, live_features, ref_features, d)
 
-        if decision != "Column":
-            t += 1
-            if t >= D.shape[0]:
-                D = np.vstack([D, np.full((1, D.shape[1]), np.inf)])
-            for k in range(max(0, j - C + 1), j + 1):
-                if t < D.shape[0] and k < D.shape[1]:
-                    D[t, k] = evaluate_cost(t, k, live_chroma, ref_chroma, D)
+        while t < live_features.shape[1] - 1 and j < ref_features.shape[1]:
+            decision = GetInc(t, j, d)
 
-        if decision != "Row":
-            j += 1
-            for k in range(max(0, t - C + 1), t + 1):
-                if k < D.shape[0] and j < D.shape[1]:
-                    D[k, j] = evaluate_cost(k, j, live_chroma, ref_chroma, D)
+            if decision != "Column":  # calculate new row if last step was not a column
+                t += 1
+                for k in range(max(0, j - c + 1), j + 1):
+                    if t < live_features.shape[1] and k < ref_features.shape[1]:
+                        d[(t, k)] = EvaluatePathCost(t, k, live_features, ref_features, d)
 
-        if previous and previous != decision and decision != "Both":
-            if len(P) > 0:
+            if decision != "Row":  # Calculate new row
+                j += 1
+                for k in range(max(0, t - c + 1), t + 1):
+                    if k < live_features.shape[1] and j < ref_features.shape[1]:
+                        d[(k, j)] = EvaluatePathCost(k, j, live_features, ref_features, d)
+
+            # HOT FIX that makes sure that we never make an unnecessary column followed imidietly by a row or vice versa
+            if previous != decision and decision != "Both" and previous != None and previous != "Both":
+                # print(f"{previous} {P[-1]} {decision}")
                 P.pop(-1)
-            previous = "Both"
-        elif decision != "Both":
-            previous = decision
+                previous = "Both"
+            # HOT FIX END
 
-        runCount = runCount + 1 if decision == previous else 1
+            if decision == previous:
+                runCount += 1
+            else:
+                runCount = 1
 
-        if t < D.shape[0] and j < D.shape[1]:
-            P.append((t, j))
-            Client.send_data(f"{j:.3f}")  # Send alignment progress to Unity
+            # Log only previous decision if it was not both, since it is always alowed to be both
+            if decision != "Both":
+                previous = decision
+
+            if (t, j) in d.keys():
+                P.append((t, j))
+        return d, P
 
 def calculate_chroma_chunk(audio_chunk):
     return librosa.feature.chroma_stft(
@@ -130,9 +139,8 @@ def simulate_input(audio_path):
         append_and_process_chroma(chroma)
 
 def append_and_process_chroma(chroma):
-    global live_chroma, D
+    global live_chroma
     live_chroma = np.append(live_chroma, chroma, axis=1)
-    D = np.append(D, np.full((chroma.shape[1], D.shape[1]), np.inf), axis=0)
     online_tw()
 
 def mic_callback(indata, frames, time, status):
@@ -168,7 +176,7 @@ def generate_reference_features(audio, buffer_size):
             continue  # skip until we have enough audio
 
         # Compute chroma for this chunk
-        feature_chunk = calculate_chroma_chunk(padded_audio_chunk)
+        feature_chunk = get_feature_chunk(padded_audio_chunk)
 
         # Keep only chroma frames that came from the *new* audio (excluding overlap frames)
         new_frames = (len(audio_chunk) // hop_length)
@@ -183,6 +191,7 @@ def generate_reference_features(audio, buffer_size):
     return features
 
 # =============== Main ===============
+ref_chroma = generate_reference_features(y_ref, BUFFER_SIZE)
 try:
     if USE_SIMULATED_INPUT:
         simulate_input(sim_audio_path)  # Just using the same track as dummy live input

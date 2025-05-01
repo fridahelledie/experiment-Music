@@ -18,8 +18,6 @@ duration = 40
 previous = None
 runCount = 1
 maxRunCount = 3
-max_matrix_size = 1024
-matrix_offset = 0
 
 #variables for chroma features
 n_fft = 1024  #window length
@@ -156,7 +154,6 @@ def online_tw(live_features, ref_features, _d, _P, _t, _j):
                 if k < live_features.shape[1] and j < ref_features.shape[1]:
                     d[(k, j)] = EvaluatePathCost(k, j, live_features, ref_features, d)
 
-
         #HOT FIX that makes sure that we never make an unnecessary column followed imidietly by a row or vice versa
         if previous != decision and decision != "Both" and previous != None and previous != "Both":
             # print(f"{previous} {P[-1]} {decision}")
@@ -173,10 +170,8 @@ def online_tw(live_features, ref_features, _d, _P, _t, _j):
         if decision != "Both":
             previous = decision
 
-
         if (t, j) in d.keys():
             P.append((t, j))
-
     return d, P
 
 def EvaluatePathCost(t, j, X, Y, d):
