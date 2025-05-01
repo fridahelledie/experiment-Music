@@ -21,26 +21,18 @@ audio_input_path = os.path.join("audio", selected_song)
 json_output_path = os.path.join("jsonVisualizations", os.path.splitext(selected_song)[0] + ".json")
 
 # Audio settings
-sr = 22050  # Sampling rate
-n_fft = 2048  # FFT window size
-hop_length = 1024  # Hop length for STFT
-buffer_size = 2048  # Chunk size
+n_fft = 1024  # FFT window size
+hop_length = 512  # Hop length for STFT
+buffer_size = 4096 # Chunk size
 
 # Client connection
 if not Client.connect():
     print("Failed to connect to Unity client.")
     sys.exit(1)
 
-# Function to compute amplitude envelope
-def amplitude_envelope(signal, frame_size, hop_length):
-    amplitude_envelope = []
-    for i in range(0, len(signal), hop_length):
-        amplitude_envelope.append(max(signal[i:i + frame_size]))
-    return np.array(amplitude_envelope)
-
 # Load the audio file
 try:
-    y, sr = librosa.load(audio_input_path, sr=sr)
+    y, sr = librosa.load(audio_input_path)
 except FileNotFoundError:
     print(f"Audio file not found at {audio_input_path}")
     Client.send_data(f"Audio file not found at {audio_input_path}")
@@ -49,8 +41,12 @@ except Exception as e:
     Client.send_data("Error while loading audio file:" + type(e).__name__)
     sys.exit(1)
 
-# Compute amplitude envelope for the entire audio
-AE_audio = amplitude_envelope(y, buffer_size, hop_length)
+# Compute full onset envelope and chroma with consistent frame steps
+onset_env = librosa.onset.onset_strength(y=y, sr=sr, hop_length=hop_length)
+chroma = librosa.feature.chroma_stft(y=y, sr=sr, n_fft=n_fft, hop_length=hop_length)
+
+# Compute amplitude envelope per hop step (using RMS)
+rms = librosa.feature.rms(y=y, frame_length=n_fft, hop_length=hop_length)[0]
 
 # Compute beats
 tempo, beat_frames = librosa.beat.beat_track(y=y, sr=sr, hop_length=hop_length)
@@ -58,35 +54,35 @@ beat_times = librosa.frames_to_time(beat_frames, sr=sr, hop_length=hop_length)
 
 # Initialize feature storage
 feature_data = []
-num_chunks = len(y) // buffer_size
+num_frames = chroma.shape[1]  # number of frames (steps)
 
+for i in range(num_frames):
+    timestamp = librosa.frames_to_time(i, sr=sr, hop_length=hop_length)
 
-# Process audio in chunks
-for i in range(num_chunks):
-    start = i * buffer_size
-    end = start + buffer_size
-    audio_chunk = y[start:end]
+    # Onset
+    onset_strength = float(onset_env[i]) if i < len(onset_env) else 0.0
 
-    # Compute onset strength
-    onset_env = librosa.onset.onset_strength(y=audio_chunk, sr=sr, hop_length=hop_length)
-    max_onset_strength = onset_env.max()
+    # Chroma vector for frame i
+    chroma_vector = np.round(chroma[:, i], 3).tolist()
 
-    # Compute chroma features
-    chroma = librosa.feature.chroma_stft(y=audio_chunk, sr=sr, n_fft=n_fft, hop_length=hop_length)
-    chroma_list = np.round(chroma.mean(axis=1), 3).tolist()
+    # Amplitude (RMS energy)
+    amplitude = float(rms[i]) if i < len(rms) else 0.0
 
-    # Retrieve amplitude envelope value for this chunk
-    amplitude_value = float(AE_audio[i]) if i < len(AE_audio) else 0.0
+    # Check for beat occurrence at this frame
+    frame_time = timestamp
+    beat_at_frame = None
+    for bt in beat_times:
+        if abs(bt - frame_time) < (hop_length / sr):  # ~512 samples tolerance
+            beat_at_frame = round(bt, 3)
+            break
 
-    current_beat_times = [bt for bt in beat_times if start / sr <= bt < end / sr]
-
-    # Store the feature with a timestamp
+    # Store feature entry
     feature_data.append({
-        "timestamp": round(start / sr, 3),
-        "onset": round(max_onset_strength, 3),
-        "amplitude": amplitude_value,
-        "chroma": chroma_list,
-        "beat_times": round(current_beat_times[0], 3) if len(current_beat_times) == 1 else (current_beat_times if len(current_beat_times) > 1 else None),
+        "timestamp": round(timestamp, 3),
+        "onset": round(onset_strength, 3),
+        "amplitude": round(amplitude, 3),
+        "chroma": chroma_vector,
+        "beat_times": beat_at_frame,
     })
 
 
@@ -99,7 +95,6 @@ with open(json_output_path, "w") as f:
 
 Client.send_data("Should have saved" )
 Client.disconnect()
-time.sleep(0.5)
-subprocess.run(["python", "OLTW-aligner.py", selected_song])
+
 
 
