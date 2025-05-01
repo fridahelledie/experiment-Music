@@ -5,6 +5,7 @@ import sys
 import os
 import sounddevice as sd
 import Client
+from scipy.spatial.distance import cosine
 
 from dtaidistance import dtw
 
@@ -20,11 +21,6 @@ HOP_LENGTH = 512
 C = 8  # Window size for DTW
 # ======================================
 
-# Client connection
-if not Client.connect():
-    print("Failed to connect to Unity client.")
-    sys.exit(1)
-
 # Command-line input
 if len(sys.argv) < 2:
     print("Usage: python OLTW-aligner.py <SelectedSong>")
@@ -34,94 +30,122 @@ song_name = sys.argv[1]
 ref_audio_path = os.path.join("audio", song_name)
 sim_audio_path = os.path.join("audio", SIMULATED_INPUT_NAME)
 
-Client.send_data(ref_audio_path)
-
 # Load reference audio and chroma
 y_ref, sr = librosa.load(ref_audio_path, sr=None)
 
+# Client connection
+if not Client.connect():
+    print("Failed to connect to Unity client.")
+    sys.exit(1)
+
 # Chroma buffer for live input
-live_chroma = np.empty(shape=(ref_chroma.shape[0], 0))
 audio_queue = queue.Queue()
 
 # DTW tracking
 P = [(0, 0)]
 t, j = 0, 0
 d = {}
+c = 16 #Window Size
 
 # Previous direction tracking
 previous = None
 runCount = 1
 maxRunCount = 3
 
-def evaluate_cost(t, j, X, Y, D):
-    cost = dtw.distance(X[:, t], Y[:, j])
+#variables for chroma features
+n_fft = 1024  #window length
+hop_length = 512
+
+def evaluate_cost(t, j, X, Y, d):
+    distance = cosine(X[:, t], Y[:, j])
+
     neighbors = []
-    if t - 1 >= 0: neighbors.append(D[t - 1, j])
-    if j - 1 >= 0: neighbors.append(D[t, j - 1])
-    if t - 1 >= 0 and j - 1 >= 0: neighbors.append(D[t - 1, j - 1])
-    return cost + (min(neighbors) if neighbors else 0)
+    if t - 1 >= 0 and (t - 1, j) in d.keys():
+        neighbors.append(d[(t - 1, j)])
+    if j - 1 >= 0 and (t, j - 1) in d.keys():
+        neighbors.append(d[(t, j - 1)])
+    if t - 1 >= 0 and j - 1 >= 0 and (t - 1, j - 1) in d.keys():
+        neighbors.append(d[(t - 1, j - 1)])
 
-def get_inc(t, j, D):
+    if len(neighbors) > 0:
+        distance += min(neighbors)
+
+    return distance
+
+def get_inc(t, j, d):
     global runCount, previous
-    if t < C:
+    # at the very start return both
+    if t < c:
         return "Both"
+    # if one direction has been repeated to often, switch
     if runCount > maxRunCount:
-        return "Column" if previous == "Row" else "Row"
+        if previous == "Row":
+            return "Column"
+        else:
+            return "Row"
+    # find the best direction
+    best_cost = np.inf
+    best_move = "Both"
+    # check in all directions from the current cell(t,j)
+    # first check that we are not on the first row,checks if the cost of moving up is less than current
+    if (t - 1, j) in d.keys() and d[(t - 1, j)] < best_cost:
+        best_cost = d[(t - 1, j)]  # update the best cost
+        best_move = "Row"  # assign the best move
+    # checks if moving left is the best
+    if (t, j - 1) in d.keys() and d[(t, j - 1)] < best_cost:
+        best_cost = d[(t, j - 1)]  # update the best cost
+        best_move = "Column"  # assign the best move
+    # checks if moving left and up is the best
+    if (t - 1, j - 1) in d.keys() and d[(t - 1, j - 1)] < best_cost:
+        best_move = "Both"  # assign the best move
 
-    best_cost, best_move = np.inf, "Both"
-    if t - 1 >= 0 and D[t - 1, j] < best_cost:
-        best_cost, best_move = D[t - 1, j], "Row"
-    if j - 1 >= 0 and D[t, j - 1] < best_cost:
-        best_cost, best_move = D[t, j - 1], "Column"
-    if t - 1 >= 0 and j - 1 >= 0 and D[t - 1, j - 1] < best_cost:
-        best_move = "Both"
     return best_move
 
 def online_tw():
-    global t, j, P, d, previous, runCount, live_chroma
+    global t, j, P, d, previous, runCount, live_features, ref_features, c
     t, j = P[-1]
+    Client.send_data("Entered oltw function")
+    # initialize new rows diagonal values (cost values)
+    if t == 0 and live_features.shape[1] > 0:
+        d[(t, j)] = evaluate_cost(t, j, live_features, ref_features, d)
 
-    while t < live_chroma.shape[1] - 1 and j < ref_chroma.shape[1]:
-        # initialize new rows diagonal values (cost values)
-        if t == 0 and live_features.shape[1] > 0:
-            d[(t, j)] = EvaluatePathCost(t, j, live_features, ref_features, d)
+    while t < live_features.shape[1] - 1 and j < ref_features.shape[1]:
+        decision = get_inc(t, j, d)
 
-        while t < live_features.shape[1] - 1 and j < ref_features.shape[1]:
-            decision = GetInc(t, j, d)
+        if decision != "Column":  # calculate new row if last step was not a column
+            t += 1
+            for k in range(max(0, j - c + 1), j + 1):
+                if t < live_features.shape[1] and k < ref_features.shape[1]:
+                    d[(t, k)] = evaluate_cost(t, k, live_features, ref_features, d)
 
-            if decision != "Column":  # calculate new row if last step was not a column
-                t += 1
-                for k in range(max(0, j - c + 1), j + 1):
-                    if t < live_features.shape[1] and k < ref_features.shape[1]:
-                        d[(t, k)] = EvaluatePathCost(t, k, live_features, ref_features, d)
+        if decision != "Row":  # Calculate new row
+            j += 1
+            for k in range(max(0, t - c + 1), t + 1):
+                if k < live_features.shape[1] and j < ref_features.shape[1]:
+                    d[(k, j)] = evaluate_cost(k, j, live_features, ref_features, d)
 
-            if decision != "Row":  # Calculate new row
-                j += 1
-                for k in range(max(0, t - c + 1), t + 1):
-                    if k < live_features.shape[1] and j < ref_features.shape[1]:
-                        d[(k, j)] = EvaluatePathCost(k, j, live_features, ref_features, d)
+        # HOT FIX that makes sure that we never make an unnecessary column followed imidietly by a row or vice versa
+        if previous != decision and decision != "Both" and previous != None and previous != "Both":
+            # print(f"{previous} {P[-1]} {decision}")
+            P.pop(-1)
+            previous = "Both"
+        # HOT FIX END
 
-            # HOT FIX that makes sure that we never make an unnecessary column followed imidietly by a row or vice versa
-            if previous != decision and decision != "Both" and previous != None and previous != "Both":
-                # print(f"{previous} {P[-1]} {decision}")
-                P.pop(-1)
-                previous = "Both"
-            # HOT FIX END
+        if decision == previous:
+            runCount += 1
+        else:
+            runCount = 1
 
-            if decision == previous:
-                runCount += 1
-            else:
-                runCount = 1
+        # Log only previous decision if it was not both, since it is always alowed to be both
+        if decision != "Both":
+            previous = decision
 
-            # Log only previous decision if it was not both, since it is always alowed to be both
-            if decision != "Both":
-                previous = decision
+        if (t, j) in d.keys():
+            P.append((t, j))
+            Client.send_data(f"{j}")
+    return d, P
 
-            if (t, j) in d.keys():
-                P.append((t, j))
-        return d, P
-
-def calculate_chroma_chunk(audio_chunk):
+def get_feature_chunk(audio_chunk):
     return librosa.feature.chroma_stft(
         y=audio_chunk,
         sr=sr,
@@ -132,24 +156,25 @@ def calculate_chroma_chunk(audio_chunk):
 
 
 def simulate_input(audio_path):
+
     y_live, _ = librosa.load(audio_path, sr=sr)
     for start in range(0, len(y_live), BUFFER_SIZE):
         chunk = y_live[start:start+BUFFER_SIZE]
         if len(chunk) == 0: break
         if chunk.ndim > 1: chunk = chunk.mean(axis=1)
-        chroma = calculate_chroma_chunk(chunk)
+        chroma = get_feature_chunk(chunk)
         append_and_process_chroma(chroma)
 
 def append_and_process_chroma(chroma):
-    global live_chroma
-    live_chroma = np.append(live_chroma, chroma, axis=1)
+    global live_features
+    live_features = np.append(live_features, chroma, axis=1)
     online_tw()
 
 def mic_callback(indata, frames, time, status):
     if status:
         print(status)
     audio_chunk = indata[:, 0] if indata.ndim > 1 else indata
-    chroma = calculate_chroma_chunk(audio_chunk)
+    chroma = get_feature_chunk(audio_chunk)
     append_and_process_chroma(chroma)
 
 def generate_reference_features(audio, buffer_size):
@@ -193,7 +218,25 @@ def generate_reference_features(audio, buffer_size):
     return features
 
 # =============== Main ===============
-ref_chroma = generate_reference_features(y_ref, BUFFER_SIZE)
+ref_features = generate_reference_features(y_ref, BUFFER_SIZE)
+live_features = np.empty(shape=(ref_features.shape[0], 0))
+
+Client.send_data("READY")
+
+# Wait for Unity to send "START"
+def wait_for_start():
+    while True:
+        try:
+            data = Client.sock.recv(1024).decode("utf-8").strip()
+            if data == "START":
+                print("Received START from Unity.")
+                break
+        except Exception as e:
+            print("Error while waiting for START:", e)
+            break
+
+wait_for_start()
+
 try:
     if USE_SIMULATED_INPUT:
         simulate_input(sim_audio_path)  # Just using the same track as dummy live input
