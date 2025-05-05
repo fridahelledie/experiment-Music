@@ -9,6 +9,7 @@ from librosa.sequence import dtw
 from scipy.spatial.distance import cosine
 import matplotlib.pyplot as plt
 import librosa.display
+import sounddevice as sd
 
 # Set working directory to files absolute path (this is because unity changes the CWD when launching the script)
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -48,7 +49,7 @@ buffer_size = N * hop_length
 reference_audio, sr = librosa.load(reference_audio_path)
 
 #Input audio
-input_audio_path = "audio/03BarberSonata_3.wav"
+input_audio_path = "audio/03BarberSonata_2.wav"
 input_audio, sr = librosa.load(input_audio_path, sr=sr) #forces matching sampling rates between reference and input audio
 
 
@@ -242,60 +243,45 @@ def GetInc(t, j, d):
 
     return bestMove
 
-def simulate_live_audio_input_new(live_audio, buffer_size, ref_features):
-    global matrix_offset
+def process_live_audio_chunk(audio_chunk, buffer_size, ref_features):
+    global matrix_offset, live_features, d, P
     # live_audio, sr_ = librosa.load(audio_path, sr=sr, duration=duration) # Force same sr as reference
-
-    #Declare variables
-    live_features = np.empty(shape=(ref_features.shape[0], 0)) #Declares an empty array for keeping the chroma features as they are inputted
-
-    #Online tw variables
-    P = [(0, 0)]  # list of points in the path cost
-    t = 0
-    j = 0
-    d = {(0,0) : 0}  # Cost dictionary
 
     #History buffer for smoother chroma computation
     history_buffer = np.zeros(buffer_size)
 
+    # Stop when file ends (Safety)
+    if len(audio_chunk) == 0:
+        d,P, live_features
 
-    #For loop that cuts the file into buffersize chunks
-    for frame_start in range(0, len(live_audio), buffer_size):
-        #reads buffer_sizer amount of frames
-        audio_chunk = live_audio[frame_start : frame_start + buffer_size]
-
-        # Stop when file ends (Safety)
-        if len(audio_chunk) == 0:
-            break
-
-        # If stereo, convert to mono
-        if audio_chunk.ndim > 1:
-            audio_chunk = audio_chunk.mean(axis=1)
+    # If stereo, convert to mono
+    if audio_chunk.ndim > 1:
+        audio_chunk = audio_chunk.mean(axis=1)
 
 
-        # Concatenate with previous buffer to maintain continuity
-        padded_audio_chunk = np.concatenate((history_buffer[-buffer_size:], audio_chunk))
+    # Concatenate with previous buffer to maintain continuity
+    padded_audio_chunk = np.concatenate((history_buffer[-buffer_size:], audio_chunk))
 
-        if len(padded_audio_chunk) < n_fft:
-            continue  # skip until we have enough audio
+    if len(padded_audio_chunk) < n_fft:
+        d,P, live_features # skip until we have enough audio
 
-        # Compute chroma for this chunk
-        feature_chunk = get_feature_chunk(padded_audio_chunk)
+    # Compute chroma for this chunk
+    feature_chunk = get_feature_chunk(padded_audio_chunk)
 
-        # Keep only chroma frames that came from the *new* audio (excluding overlap frames)
-        new_frames = (len(audio_chunk) // hop_length)
-        feature_chunk = feature_chunk[:, -new_frames:] if feature_chunk.shape[1] >= new_frames else feature_chunk
+    # Keep only chroma frames that came from the *new* audio (excluding overlap frames)
+    new_frames = (len(audio_chunk) // hop_length)
+    feature_chunk = feature_chunk[:, -new_frames:] if feature_chunk.shape[1] >= new_frames else feature_chunk
 
-        # Update history
-        history_buffer = np.concatenate((history_buffer, audio_chunk))[-n_fft:]
+    # Update history
+    history_buffer = np.concatenate((history_buffer, audio_chunk))[-n_fft:]
 
-        # Append to total live chroma
-        live_features = np.append(live_features, feature_chunk, axis=1)
+    # Append to total live chroma
+    live_features = np.append(live_features, feature_chunk, axis=1)
 
-        #run online time warp
-        t, j = P[-1]
-        # print(f"{t}, {j}")
-        d, P = online_tw(live_features, ref_features, d, P, t, j)
+    #run online time warp
+    t, j = P[-1]
+    Client.send_data(f"Step t: {t}, j: {j}")
+    d, P = online_tw(live_features, ref_features, d, P, t, j)
 
     #Returns cost dictionary and alignment path
     return d,P, live_features
@@ -337,8 +323,26 @@ def get_feature_chunk(audio_chunk):
     return calculate_chroma_chunk(audio_chunk)
 
 
+def mic_callback(indata, outdata, frames: int, time, status):
+    global reference_features
+    if status:
+        print(status)
+    chunk = indata[:, :] if indata.ndim > 1 else indata
+
+    process_live_audio_chunk(chunk, buffer_size, reference_features)
+
+######################################MAIN
 #Generating reference features
 reference_features = generate_reference_features(reference_audio, buffer_size)
+
+#Declare variables
+live_features = np.empty(shape=(reference_features.shape[0], 0)) #Declares an empty array for keeping the chroma features as they are inputted
+
+#Online tw variables
+P = [(0, 0)]  # list of points in the path cost
+t = 0
+j = 0
+d = {(0,0) : 0}  # Cost dictionary
 
 #Timing the algorithm
 start_time = time.time()
@@ -358,8 +362,20 @@ def wait_for_start():
 
 wait_for_start()
 
+try:
+    with sd.Stream(callback=mic_callback, channels=1, samplerate=sr, blocksize=buffer_size):
+        sd.play(input_audio, sr, blocking=False)
+        print("Listening to mic... Press Ctrl+C to stop.")
+        while True:
+            pass
+except KeyboardInterrupt:
+    print("Stopped by user.")
+except Exception as e:
+    print(f"Error: {e}")
+finally:
+    Client.disconnect()
 
-d, P, live_features = simulate_live_audio_input_new(live_audio=input_audio, buffer_size=buffer_size, ref_features=reference_features)
+# d, P, live_features = simulate_live_audio_input_new(live_audio=input_audio, buffer_size=buffer_size, ref_features=reference_features)
 
 
 # D, P = simulate_live_audio_input(audio_path=input_audio_path, buffer_size= buffer_size, ref=ref_chroma)
@@ -369,7 +385,7 @@ d, P, live_features = simulate_live_audio_input_new(live_audio=input_audio, buff
 #D_offline, P_offline = full_offline_dtw(Y_chroma, X_chroma)
 
 #Print time since start
-print(f"Finished in {time.time() - start_time} seconds")
+# print(f"Finished in {time.time() - start_time} seconds")
 
 Client.disconnect()
 

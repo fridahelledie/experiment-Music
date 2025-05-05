@@ -1,3 +1,4 @@
+import os
 import time
 
 import librosa
@@ -8,6 +9,8 @@ from scipy.spatial.distance import cosine
 import matplotlib.pyplot as plt
 import librosa.display
 from DLNCO_extraction_realtime import DLNCOProcessor
+import sounddevice as sd
+import threading
 
 c = 16 #Window Size
 
@@ -172,6 +175,7 @@ def online_tw(live_features, ref_features, _d, _P, _t, _j):
 
         if (t, j) in d.keys():
             P.append((t, j))
+            print(f"{t}, {j}")
     return d, P
 
 def EvaluatePathCost(t, j, X, Y, d):
@@ -286,21 +290,44 @@ def simulate_live_audio_input_new(live_audio, buffer_size, ref_features):
     return d,P, live_features
 
 
-def full_offline_dtw(reference_chroma, live_chroma):
-    # Compute cost matrix using cosine distance
-    cost_matrix = np.zeros((live_chroma.shape[1], reference_chroma.shape[1]))
+def process_live_audio_chunk(audio_chunk, buffer_size, ref_features):
+    global matrix_offset, live_features, d, P, t, j, history_buffer, audio_queue
+    # live_audio, sr_ = librosa.load(audio_path, sr=sr, duration=duration) # Force same sr as reference
 
-    for t in range(live_chroma.shape[1]):
-        for j in range(reference_chroma.shape[1]):
-            cost_matrix[t, j] = cosine(live_chroma[:, t], reference_chroma[:, j])
+    # Stop when file ends (Safety)
+    if len(audio_chunk) == 0:
+        return d,P, live_features
 
-    # Use librosa's DTW function
-    D, wp = librosa.sequence.dtw(C=cost_matrix)
+    # If stereo, convert to mono
+    if audio_chunk.ndim > 1:
+        audio_chunk = audio_chunk.mean(axis=1)
 
-    # wp gives you the path in reverse (from end to start), so flip it
-    wp = np.array(wp)[::-1]
 
-    return D, wp
+    # Concatenate with previous buffer to maintain continuity
+    padded_audio_chunk = np.concatenate((history_buffer[-buffer_size:], audio_chunk))
+
+    if len(padded_audio_chunk) < n_fft:
+        return d,P, live_features # skip until we have enough audio
+
+    # Compute chroma for this chunk
+    feature_chunk = get_feature_chunk(padded_audio_chunk)
+
+    # Keep only chroma frames that came from the *new* audio (excluding overlap frames)
+    new_frames = (len(audio_chunk) // hop_length)
+    feature_chunk = feature_chunk[:, -new_frames:] if feature_chunk.shape[1] >= new_frames else feature_chunk
+
+    # Update history
+    history_buffer = np.concatenate((history_buffer, audio_chunk))[-n_fft:]
+
+    # Append to total live chroma
+    live_features = np.append(live_features, feature_chunk, axis=1)
+
+    #run online time warp
+    t, j = P[-1]
+    d, P = online_tw(live_features, ref_features, d, P, t, j)
+
+    #Returns cost dictionary and alignment path
+    return d,P, live_features
 
 
 def calculate_chroma_chunk(audio_chunk):
@@ -323,14 +350,64 @@ def get_feature_chunk(audio_chunk):
     # return dlnco.compute_chunk(audio_chunk)
 
 
+def mic_callback(indata, frames: int, time, status):
+    global reference_features, audio_queue
+    if status:
+        print(status)
+    chunk = indata[:, 0] if indata.ndim > 1 else indata
+
+    audio_queue.put(chunk)
+    # process_live_audio_chunk(chunk, buffer_size, reference_features)
+
+
 #Generating reference features
 reference_features = generate_reference_features(reference_audio, buffer_size)
+live_features = np.empty(shape=(reference_features.shape[0], 0)) #Declares an empty array for keeping the chroma features as they are inputted
 
-#Timing the algorithm
+# History buffer for smoother chroma computation
+history_buffer = np.zeros(buffer_size)
+
+P = [(0, 0)]  # list of points in the path cost
+t = 0
+j = 0
+d = {(0,0) : 0}  # Cost dictionary
+
+audio_queue = queue.Queue()
+
+# Timing the algorithm
 start_time = time.time()
 
-d, P, live_features = simulate_live_audio_input_new(live_audio=input_audio, buffer_size=buffer_size, ref_features=reference_features)
+# Threads for microphone audio processing
+is_running = True
 
+def process_queue():
+    global audio_queue, reference_features, is_running
+    while is_running:
+        if not audio_queue.empty():
+            process_live_audio_chunk(audio_queue.get(), buffer_size, reference_features)
+
+process_thread = threading.Thread(target=process_queue)
+
+# run input simulation
+# d, P, live_features = simulate_live_audio_input_new(live_audio=input_audio, buffer_size=buffer_size, ref_features=reference_features)
+
+#run with microphone input
+try:
+    with sd.InputStream(callback=mic_callback, channels=1, samplerate=sr, blocksize=buffer_size):
+        os.startfile(input_audio_path)
+        process_thread.start()
+        print("Listening to mic... Press Ctrl+C to stop.")
+        while True:
+            pass
+except KeyboardInterrupt:
+    print("Stopped by user.")
+except Exception as e:
+    print(f"Error: {e}")
+finally:
+    # Client.disconnect()
+    pass
+
+is_running = False
 
 # D, P = simulate_live_audio_input(audio_path=input_audio_path, buffer_size= buffer_size, ref=ref_chroma)
 
