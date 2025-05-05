@@ -376,9 +376,10 @@ mic_thread = threading.Thread(target=mic_input)
 #run with microphone input
 mic_thread.start()
 process_thread.start()
-os.startfile(input_audio_path)
+#os.startfile(input_audio_path)
 
-input("press enter to stop")
+while True:
+    pass
 
 is_running = False
 
