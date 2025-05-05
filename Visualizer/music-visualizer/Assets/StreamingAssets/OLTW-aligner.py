@@ -5,11 +5,11 @@ import librosa
 import numpy as np
 import queue
 import Client
-from librosa.sequence import dtw
 from scipy.spatial.distance import cosine
 import matplotlib.pyplot as plt
 import librosa.display
 import sounddevice as sd
+import threading
 
 # Set working directory to files absolute path (this is because unity changes the CWD when launching the script)
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -287,23 +287,6 @@ def process_live_audio_chunk(audio_chunk, buffer_size, ref_features):
     return d,P, live_features
 
 
-def full_offline_dtw(reference_chroma, live_chroma):
-    # Compute cost matrix using cosine distance
-    cost_matrix = np.zeros((live_chroma.shape[1], reference_chroma.shape[1]))
-
-    for t in range(live_chroma.shape[1]):
-        for j in range(reference_chroma.shape[1]):
-            cost_matrix[t, j] = cosine(live_chroma[:, t], reference_chroma[:, j])
-
-    # Use librosa's DTW function
-    D, wp = librosa.sequence.dtw(C=cost_matrix)
-
-    # wp gives you the path in reverse (from end to start), so flip it
-    wp = np.array(wp)[::-1]
-
-    return D, wp
-
-
 def calculate_chroma_chunk(audio_chunk):
     #Old chroma calculation
     # chroma = librosa.feature.chroma_stft(y=audio_chunk, sr=sr, n_fft=n_fft, hop_length=hop_length)
@@ -344,6 +327,8 @@ t = 0
 j = 0
 d = {(0,0) : 0}  # Cost dictionary
 
+audio_queue = queue.Queue()
+
 #Timing the algorithm
 start_time = time.time()
 
@@ -362,18 +347,42 @@ def wait_for_start():
 
 wait_for_start()
 
-try:
-    with sd.Stream(callback=mic_callback, channels=1, samplerate=sr, blocksize=buffer_size):
-        sd.play(input_audio, sr, blocking=False)
-        print("Listening to mic... Press Ctrl+C to stop.")
-        while True:
+# Threads for microphone audio processing
+is_running = True
+
+def process_queue():
+    global audio_queue, reference_features, is_running
+    while is_running:
+        if not audio_queue.empty():
+            print("processing queue")
+            process_live_audio_chunk(audio_queue.get(), buffer_size, reference_features)
+        else:
+            # print("Queue is empty")
             pass
-except KeyboardInterrupt:
-    print("Stopped by user.")
-except Exception as e:
-    print(f"Error: {e}")
-finally:
-    Client.disconnect()
+
+process_thread = threading.Thread(target=process_queue)
+
+
+def mic_input():
+    while is_running:
+        chunk = sd.rec(frames=buffer_size, channels=2, blocking=True)
+        audio_queue.put(chunk)
+
+mic_thread = threading.Thread(target=mic_input)
+
+# run input simulation
+# d, P, live_features = simulate_live_audio_input_new(live_audio=input_audio, buffer_size=buffer_size, ref_features=reference_features)
+
+#run with microphone input
+mic_thread.start()
+process_thread.start()
+os.startfile(input_audio_path)
+
+input("press enter to stop")
+
+is_running = False
+
+Client.disconnect()
 
 # d, P, live_features = simulate_live_audio_input_new(live_audio=input_audio, buffer_size=buffer_size, ref_features=reference_features)
 

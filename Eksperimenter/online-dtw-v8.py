@@ -31,11 +31,11 @@ N = 8 # number of chroma features per chunk
 buffer_size = N * hop_length
 
 #Reference audio
-reference_audio_path = "03BarberSonata_1.wav"
+reference_audio_path = "03BarberSonata_2.wav"
 reference_audio, sr = librosa.load(reference_audio_path)
 
 #Input audio
-input_audio_path = "03BarberSonata_3.wav"
+input_audio_path = "03BarberSonata_2.wav"
 input_audio, sr = librosa.load(input_audio_path, sr=sr) #forces matching sampling rates between reference and input audio
 
 #DLNCO
@@ -347,7 +347,6 @@ def calculate_chroma_chunk(audio_chunk):
 
 def get_feature_chunk(audio_chunk):
     return calculate_chroma_chunk(audio_chunk)
-    # return dlnco.compute_chunk(audio_chunk)
 
 
 def mic_callback(indata, frames: int, time, status):
@@ -384,28 +383,31 @@ def process_queue():
     global audio_queue, reference_features, is_running
     while is_running:
         if not audio_queue.empty():
+            print("processing queue")
             process_live_audio_chunk(audio_queue.get(), buffer_size, reference_features)
+        else:
+            # print("Queue is empty")
+            pass
 
 process_thread = threading.Thread(target=process_queue)
+
+
+def mic_input():
+    while is_running:
+        chunk = sd.rec(frames=buffer_size, channels=2, blocking=True)
+        audio_queue.put(chunk)
+
+mic_thread = threading.Thread(target=mic_input)
 
 # run input simulation
 # d, P, live_features = simulate_live_audio_input_new(live_audio=input_audio, buffer_size=buffer_size, ref_features=reference_features)
 
 #run with microphone input
-try:
-    with sd.InputStream(callback=mic_callback, channels=1, samplerate=sr, blocksize=buffer_size):
-        os.startfile(input_audio_path)
-        process_thread.start()
-        print("Listening to mic... Press Ctrl+C to stop.")
-        while True:
-            pass
-except KeyboardInterrupt:
-    print("Stopped by user.")
-except Exception as e:
-    print(f"Error: {e}")
-finally:
-    # Client.disconnect()
-    pass
+mic_thread.start()
+process_thread.start()
+os.startfile(input_audio_path)
+
+input("press enter to stop")
 
 is_running = False
 
