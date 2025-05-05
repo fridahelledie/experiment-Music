@@ -13,6 +13,7 @@ using System.Collections.Concurrent;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using System.Threading;
+using UnityEngine.Networking;
 
 public class playbackInitializer : MonoBehaviour
 {
@@ -34,6 +35,7 @@ public class playbackInitializer : MonoBehaviour
     public string selectedSong = "None";
     public string songFiletype = "None"; // we should probably automate this instead of having to manually type it
     bool readyToPlay = false;
+    AudioSource audioSource;
 
 
     private void Start()
@@ -49,6 +51,7 @@ public class playbackInitializer : MonoBehaviour
         DontDestroyOnLoad(gameObject); // Preserve across scenes
 
         onPythonMessageReceived = new PythonMessageEvent();
+        audioSource = gameObject.AddComponent<AudioSource>();
     }
 
     private void Update()
@@ -67,11 +70,14 @@ public class playbackInitializer : MonoBehaviour
         if (readyToPlay && Input.GetKeyDown(KeyCode.Space))     
         {
             readyToPlay = false;
+            audioSource.Play();
             SendToPython("START");
         }
     }
     public void StartPlayback()
     {
+        StartCoroutine(loadAudio());
+
         SceneManager.LoadScene("FinalScene");
         // Start the thread for receiving data
         ThreadStart ts = new ThreadStart(GetInfo);
@@ -98,7 +104,27 @@ public class playbackInitializer : MonoBehaviour
     {
         CancelProcessing();
     }
+    IEnumerator loadAudio()
+    {
+        string filePath = System.IO.Path.Combine(Application.streamingAssetsPath, "audio", selectedSong + songFiletype);
+        string url = "file://" + filePath;
+        using (UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.UNKNOWN))
+        {
+            yield return www.SendWebRequest();
 
+            if (www.result != UnityWebRequest.Result.Success)
+            {
+                UnityEngine.Debug.LogError("Failed to load audio: " + www.error);
+                UnityEngine.Debug.LogError(url);
+
+            }
+            else
+            {
+                AudioClip clip = DownloadHandlerAudioClip.GetContent(www);
+                audioSource.clip = clip;
+            }
+        }
+    }
     #region Functions for starting, ending & communicating with python scripts
     void StartPythonProcess(string scriptName, string songName)
     {
