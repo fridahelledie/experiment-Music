@@ -35,7 +35,7 @@ reference_audio_path = "03BarberSonata_2.wav"
 reference_audio, sr = librosa.load(reference_audio_path)
 
 #Input audio
-input_audio_path = "03BarberSonata_2.wav"
+input_audio_path = "03BarberSonata_3.wav"
 input_audio, sr = librosa.load(input_audio_path, sr=sr) #forces matching sampling rates between reference and input audio
 
 #DLNCO
@@ -158,10 +158,10 @@ def online_tw(live_features, ref_features, _d, _P, _t, _j):
                     d[(k, j)] = EvaluatePathCost(k, j, live_features, ref_features, d)
 
         #HOT FIX that makes sure that we never make an unnecessary column followed imidietly by a row or vice versa
-        if previous != decision and decision != "Both" and previous != None and previous != "Both":
-            # print(f"{previous} {P[-1]} {decision}")
-            P.pop(-1)
-            previous = "Both"
+        # if previous != decision and decision != "Both" and previous != None and previous != "Both":
+        #     # print(f"{previous} {P[-1]} {decision}")
+        #     P.pop(-1)
+        #     previous = "Both"
         #HOT FIX END
 
         if decision == previous:
@@ -400,16 +400,16 @@ def mic_input():
 mic_thread = threading.Thread(target=mic_input)
 
 # run input simulation
-# d, P, live_features = simulate_live_audio_input_new(live_audio=input_audio, buffer_size=buffer_size, ref_features=reference_features)
+d, P, live_features = simulate_live_audio_input_new(live_audio=input_audio, buffer_size=buffer_size, ref_features=reference_features)
 
 #run with microphone input
-mic_thread.start()
-process_thread.start()
-os.startfile(input_audio_path)
-
-input("press enter to stop")
-
-is_running = False
+# mic_thread.start()
+# process_thread.start()
+# os.startfile(input_audio_path)
+#
+# input("press enter to stop")
+#
+# is_running = False
 
 # D, P = simulate_live_audio_input(audio_path=input_audio_path, buffer_size= buffer_size, ref=ref_chroma)
 
@@ -437,6 +437,9 @@ compare_dtw_paths(
 
 D = construct_matrix(d, live_features, reference_features)
 show_dtw(D, np.array(P))
+with open('alignment_path.txt', 'w') as f:
+    for t, j in P:
+        f.write(f"{t},{j}\n")
 
 
 

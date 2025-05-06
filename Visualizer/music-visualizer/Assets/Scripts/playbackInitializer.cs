@@ -35,7 +35,7 @@ public class playbackInitializer : MonoBehaviour
     public string selectedSong = "None";
     public string songFiletype = "None"; // we should probably automate this instead of having to manually type it
     bool readyToPlay = false;
-    AudioSource audioSource;
+    public AudioSource audioSource;
 
 
     private void Start()
@@ -51,7 +51,6 @@ public class playbackInitializer : MonoBehaviour
         DontDestroyOnLoad(gameObject); // Preserve across scenes
 
         onPythonMessageReceived = new PythonMessageEvent();
-        audioSource = gameObject.AddComponent<AudioSource>();
     }
 
     private void Update()
@@ -70,8 +69,8 @@ public class playbackInitializer : MonoBehaviour
         if (readyToPlay && Input.GetKeyDown(KeyCode.Space))     
         {
             readyToPlay = false;
-            audioSource.Play();
             SendToPython("START");
+            audioSource.Play();
         }
     }
     public void StartPlayback()
