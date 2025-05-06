@@ -88,7 +88,7 @@ public class playbackInitializer : MonoBehaviour
 
         if (generateVisualization)
         {
-            // StartPythonProcess("songProcessor", selectedSong + songFiletype); //when json file with name of selected song not present
+            StartPythonProcess("songProcessor", selectedSong + songFiletype); //when json file with name of selected song not present
         }
         else
         {
