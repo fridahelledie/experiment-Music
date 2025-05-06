@@ -26,6 +26,8 @@ public class ChromaFeatureRepresentation : MonoBehaviour
 
     [SerializeField] BeatVisualzer beatVisualizer;
 
+    [SerializeField] CircleOfFifthsVisualizer circleVisualizer;
+
 
     private void Start()
     {
@@ -40,6 +42,28 @@ public class ChromaFeatureRepresentation : MonoBehaviour
 
     void ChromaFeatureRecieved(ChromaFeature chromaFeature)
     {
+        if (circleVisualizer != null)
+        {
+            float[] reordered = new float[12];
+
+            // Circle of fifths order: C, G, D, A, E, B, F#, C#, G#, D#, A#, F
+            reordered[0] = chromaFeature.C;
+            reordered[1] = chromaFeature.G;
+            reordered[2] = chromaFeature.D;
+            reordered[3] = chromaFeature.A;
+            reordered[4] = chromaFeature.E;
+            reordered[5] = chromaFeature.B;
+            reordered[6] = chromaFeature.F_sharp;
+            reordered[7] = chromaFeature.C_sharp;
+            reordered[8] = chromaFeature.G_sharp;
+            reordered[9] = chromaFeature.D_sharp;
+            reordered[10] = chromaFeature.A_sharp;
+            reordered[11] = chromaFeature.F;
+
+            circleVisualizer.UpdateFeature(reordered);
+
+        }
+
         if (A != null)
         {
             A.UpdateFeature(chromaFeature.A);
