@@ -692,6 +692,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ef17efa9f1b48e4d86ba6579210bc2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< Updated upstream
+=======
+  audio: {fileID: 884242376}
+>>>>>>> Stashed changes
 --- !u!82 &884242376
 AudioSource:
   m_ObjectHideFlags: 0
@@ -702,7 +706,11 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
+<<<<<<< Updated upstream
   m_audioClip: {fileID: 0}
+=======
+  m_audioClip: {fileID: 8300000, guid: 00cbe2423b3e7d04181e74281e70ab4d, type: 3}
+>>>>>>> Stashed changes
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

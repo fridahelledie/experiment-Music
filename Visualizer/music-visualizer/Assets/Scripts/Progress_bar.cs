@@ -71,7 +71,7 @@ public class Progress_bar : MonoBehaviour
     }
 
     //Here the updating happens
-    private void UpdateProgress(int currentIndex)
+    public void UpdateProgress(int currentIndex)
     {
         if (childImage == null || featureCount <= 1)
             return;

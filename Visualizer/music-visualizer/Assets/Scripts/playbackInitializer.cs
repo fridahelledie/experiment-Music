@@ -75,7 +75,7 @@ public class playbackInitializer : MonoBehaviour
     }
     public void StartPlayback()
     {
-        StartCoroutine(loadAudio());
+        //StartCoroutine(loadAudio());
 
         SceneManager.LoadScene("FinalScene");
         // Start the thread for receiving data
@@ -88,13 +88,15 @@ public class playbackInitializer : MonoBehaviour
 
         if (generateVisualization)
         {
-            StartPythonProcess("songProcessor", selectedSong + songFiletype); //when json file with name of selected song not present
+            // StartPythonProcess("songProcessor", selectedSong + songFiletype); //when json file with name of selected song not present
         }
         else
         {
-            FindObjectOfType<FeaturePlayback>().StartLivePlayback(selectedSong);
+            FeaturePlayback bruh = FindObjectOfType<FeaturePlayback>();
+            bruh.StartLivePlayback(selectedSong);
+            bruh.startSteppingWithAlignmentFile();
 
-            StartPythonProcess("OLTW-aligner", selectedSong + songFiletype);
+            // StartPythonProcess("OLTW-aligner", selectedSong + songFiletype);
             // Note for future: Start FeaturePlayback, reading the selectedSong and stepping visualization based on python messages sent by oltw script
         }
 

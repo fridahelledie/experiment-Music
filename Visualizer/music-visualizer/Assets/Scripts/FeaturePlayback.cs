@@ -4,6 +4,10 @@ using System.IO;
 using Newtonsoft.Json;
 using System.Globalization;
 using System.Linq;
+using Unity.VisualScripting;
+using static UnityEngine.EventSystems.EventTrigger;
+using System.Collections;
+using UnityEngine.UIElements;
 
 public class FeaturePlayback : MonoBehaviour
 {
@@ -24,6 +28,9 @@ public class FeaturePlayback : MonoBehaviour
 
     public delegate void MaxChromaRecieved(float maxChroma);
     public static MaxChromaRecieved OnMaxChromaRecieved;
+
+    Progress_bar progressBar;
+    public AudioSource audio;
 
     [System.Serializable]
     public class FeatureEntry
@@ -72,6 +79,83 @@ public class FeaturePlayback : MonoBehaviour
             {
                 Debug.LogWarning("Failed to parse message from Python: " + message);
             }
+        }
+    }
+    public void startSteppingWithAlignmentFile()
+    {
+        StartCoroutine(StepWithAlignmentFile());
+    }
+
+    IEnumerator StepWithAlignmentFile()
+    {
+        yield return new WaitForSeconds(5);
+        progressBar = FindObjectOfType<Progress_bar>();
+
+
+        string filePath = Path.Combine(Application.streamingAssetsPath, "alignment-path.txt");
+        string fileDump = File.ReadAllText(filePath);
+
+        string[] alignmentPath = fileDump.Split("\n");
+
+        Queue<alignmentEntry> entries = new Queue<alignmentEntry>();
+
+
+        alignmentEntry lastEntry = new alignmentEntry("1,1");
+
+
+        for (int i = 0; i < alignmentPath.Length; i++) 
+        {
+            alignmentEntry newEntry = new alignmentEntry(alignmentPath[i]);
+
+            entries.Enqueue(newEntry);
+            lastEntry = newEntry;
+        }
+
+
+        float secondsPerI = 354f / lastEntry.i;
+        audio.Play();
+
+        while (entries.Count > 0)
+        {
+            alignmentEntry currentI = entries.Dequeue();
+
+            Queue<alignmentEntry> currentIQueue = new Queue<alignmentEntry>();
+
+            currentIQueue.Enqueue(currentI);
+
+            while (entries.Count > 0 && entries.Peek().i == currentI.i)
+            {
+                currentIQueue.Enqueue(entries.Dequeue());
+            }
+
+            float timePerEntry = secondsPerI / (float)currentIQueue.Count;
+            print("time per entry" + timePerEntry);
+
+
+            foreach (alignmentEntry pathPoint in currentIQueue)
+            {
+                ApplyFeatureStep(featureData[pathPoint.j]);
+                progressBar.UpdateProgress(pathPoint.j);
+                yield return new WaitForSeconds(timePerEntry);
+            }
+
+        }
+        yield return null;
+    }
+
+    public class alignmentEntry
+    {
+        public int i;
+        public int j;
+
+        public alignmentEntry(string input)
+        {
+            string[] inputArray = input.Split(",");
+            int.TryParse(inputArray[0], out int i);
+            int.TryParse(inputArray[1], out int j);
+
+            this.i = i;
+            this.j = j;
         }
     }
 
