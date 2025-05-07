@@ -29,6 +29,12 @@ public class FeaturePlayback : MonoBehaviour
     public delegate void MaxChromaRecieved(float maxChroma);
     public static MaxChromaRecieved OnMaxChromaRecieved;
 
+    public delegate void SpectralCentroidRecieved(float spectralCentroid);
+    public static SpectralCentroidRecieved OnSpectralCentroidRecieved;
+
+    public delegate void SpectralBandwidthRecieved(float spectralBandwidth);
+    public static SpectralBandwidthRecieved OnSpectralBandwidthRecieved;
+
     Progress_bar progressBar;
     public AudioSource audio;
 
@@ -40,6 +46,8 @@ public class FeaturePlayback : MonoBehaviour
         public float amplitude;
         public float[] chroma;
         public float? beat_times;
+        public float spectral_centroid;
+        public float spectral_bandwidth;
     }
 
     // Called externally to start live-aligned visualization
@@ -180,6 +188,10 @@ public class FeaturePlayback : MonoBehaviour
 
         float maxChroma = Mathf.Max(entry.chroma);
         OnMaxChromaRecieved?.Invoke(maxChroma);
+
+
+        OnSpectralCentroidRecieved?.Invoke(entry.spectral_centroid);
+        OnSpectralBandwidthRecieved?.Invoke(entry.spectral_bandwidth);
     }
 
     private bool IsBeatDetected(float? beatTime)
