@@ -60,6 +60,11 @@ spectral_centroid = librosa.feature.spectral_centroid(y=y, sr=sr, n_fft=n_fft, h
 spectral_bandwidth = librosa.feature.spectral_bandwidth(y=y, sr=sr, n_fft=n_fft, hop_length=hop_length)[0]
 
 
+# Compute spectral centroid and bandwidth
+spectral_centroid = librosa.feature.spectral_centroid(y=y, sr=sr, n_fft=n_fft, hop_length=hop_length)[0]
+spectral_bandwidth = librosa.feature.spectral_bandwidth(y=y, sr=sr, n_fft=n_fft, hop_length=hop_length)[0]
+
+
 # Initialize feature storage
 feature_data = []
 num_frames = chroma.shape[1]  # number of frames (steps)
