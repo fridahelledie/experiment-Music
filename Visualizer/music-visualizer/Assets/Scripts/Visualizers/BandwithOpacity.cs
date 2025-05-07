@@ -28,7 +28,6 @@ public class BandwithOpacity : FeatureVisualizer
     public override void UpdateFeature(float value)
     {
         targetValue = value;
-        Debug.Log("Received chroma value: " + value);
     }
 
 

@@ -8,9 +8,12 @@ using Unity.VisualScripting;
 using static UnityEngine.EventSystems.EventTrigger;
 using System.Collections;
 using UnityEngine.UIElements;
+using System;
 
 public class FeaturePlayback : MonoBehaviour
 {
+    public float songLength = 140f;
+    
     private List<FeatureEntry> featureData;
     private int lastStepIndex = -1;
 
@@ -97,7 +100,9 @@ public class FeaturePlayback : MonoBehaviour
 
     IEnumerator StepWithAlignmentFile()
     {
+        songLength = audio.clip.length;
         yield return new WaitForSeconds(5);
+        DateTime start = DateTime.Now;
         progressBar = FindObjectOfType<Progress_bar>();
 
 
@@ -121,8 +126,12 @@ public class FeaturePlayback : MonoBehaviour
         }
 
 
-        float secondsPerI = 354f / lastEntry.i;
+        float secondsPerI = songLength / lastEntry.i;
         audio.Play();
+        float lost_time = 0f;
+
+        DateTime before = DateTime.Now;
+        DateTime after = DateTime.Now;
 
         while (entries.Count > 0)
         {
@@ -137,19 +146,35 @@ public class FeaturePlayback : MonoBehaviour
                 currentIQueue.Enqueue(entries.Dequeue());
             }
 
-            float timePerEntry = secondsPerI / (float)currentIQueue.Count;
+            float timePerEntry = (secondsPerI / (float)currentIQueue.Count);
+            float waitTime = timePerEntry;
             print("time per entry" + timePerEntry);
 
 
             foreach (alignmentEntry pathPoint in currentIQueue)
             {
+                before = DateTime.Now;
+                waitTime = timePerEntry - lost_time;
                 ApplyFeatureStep(featureData[pathPoint.j]);
                 progressBar.UpdateProgress(pathPoint.j);
-                yield return new WaitForSeconds(timePerEntry);
+                yield return new WaitForSeconds(waitTime);
+                after = DateTime.Now;
+                TimeSpan timeSpan = (after - before);
+                if (timeSpan.TotalSeconds > waitTime)
+                {
+                    Debug.LogWarning("Exceeded allowed delay!!");
+                    lost_time = (float)timeSpan.TotalSeconds - waitTime;
+                }
+                else
+                {
+                    lost_time = 0;
+                }
             }
 
         }
         yield return null;
+        TimeSpan totalRuntime = DateTime.Now - start;
+        Debug.Log($"Total delay: {totalRuntime.TotalSeconds - songLength}");
     }
 
     public class alignmentEntry

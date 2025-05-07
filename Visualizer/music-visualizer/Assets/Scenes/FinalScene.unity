@@ -531,6 +531,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: F#
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 75e0bb4fb31a8c440af82f4ca5050bf6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -972,6 +977,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: A#
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 75e0bb4fb31a8c440af82f4ca5050bf6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -3119,6 +3129,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: C
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 75e0bb4fb31a8c440af82f4ca5050bf6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3341,7 +3356,6 @@ MonoBehaviour:
   minScale: 1
   maxScale: 1.5
   baseColor: {r: 0.3132075, g: 0.3132075, b: 0.3132075, a: 1}
-  highlightColor: {r: 0.72417945, g: 0.7283019, b: 0.7283019, a: 1}
   lerpSpeed: 5
 --- !u!4 &561536090
 Transform:
@@ -3352,7 +3366,7 @@ Transform:
   m_GameObject: {fileID: 561536088}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0.83639383, y: -0.93318295, z: -1.5428241}
+  m_LocalPosition: {x: -1.39, y: -0.06, z: 0.025928259}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4101,6 +4115,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 650184533}
+  - component: {fileID: 650184534}
   m_Layer: 0
   m_Name: Bandwidth
   m_TagString: Untagged
@@ -4131,6 +4146,23 @@ Transform:
   - {fileID: 1364351945}
   m_Father: {fileID: 1145690289}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &650184534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 650184532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d54a604e5e0b4f64f945dd133c205bfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  visualizers:
+  - {fileID: 1304882789}
+  - {fileID: 1938164075}
+  - {fileID: 1316528510}
+  - {fileID: 1127537241}
 --- !u!43 &792548684
 Mesh:
   m_ObjectHideFlags: 0
@@ -4368,6 +4400,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: D#
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 75e0bb4fb31a8c440af82f4ca5050bf6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5474,6 +5511,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: A
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 75e0bb4fb31a8c440af82f4ca5050bf6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5585,6 +5627,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: G#
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 75e0bb4fb31a8c440af82f4ca5050bf6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -7001,6 +7048,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: B
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 75e0bb4fb31a8c440af82f4ca5050bf6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9257,6 +9309,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: F
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 75e0bb4fb31a8c440af82f4ca5050bf6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9368,6 +9425,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: G
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 75e0bb4fb31a8c440af82f4ca5050bf6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10207,6 +10269,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: D
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 75e0bb4fb31a8c440af82f4ca5050bf6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -10397,7 +10464,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 6c541f0adb9b87b4592a51f97fcc1ed8, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 35b74ea277d0440409191004644bb766, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -11021,6 +11088,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: E
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 75e0bb4fb31a8c440af82f4ca5050bf6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -11127,6 +11199,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: C#
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 75e0bb4fb31a8c440af82f4ca5050bf6,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

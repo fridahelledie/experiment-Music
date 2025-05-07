@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from scipy.signal import butter, lfilter
 
 # Global audio path and parameters
-audio_path = '03BarberSonata2_2.20.wav'
+audio_path = '03BarberSonata_2_cut.wav'
 n_fft = 2048
 hop_length = 512
 

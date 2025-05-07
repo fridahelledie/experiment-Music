@@ -31,11 +31,11 @@ N = 8 # number of chroma features per chunk
 buffer_size = N * hop_length
 
 #Reference audio
-reference_audio_path = "03BarberSonata_2.wav"
+reference_audio_path = "03BarberSonata_3_cut.wav"
 reference_audio, sr = librosa.load(reference_audio_path)
 
 #Input audio
-input_audio_path = "03BarberSonata_3.wav"
+input_audio_path = "03BarberSonata_3_cut.wav"
 input_audio, sr = librosa.load(input_audio_path, sr=sr) #forces matching sampling rates between reference and input audio
 
 #DLNCO
