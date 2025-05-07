@@ -43,6 +43,7 @@ except Exception as e:
 
 # Compute full onset envelope and chroma with consistent frame steps
 onset_env = librosa.onset.onset_strength(y=y, sr=sr, hop_length=hop_length)
+onsets = librosa.onset.onset_detect(y=y, sr=sr, onset_envelope=onset_env, hop_length=hop_length)
 chroma = librosa.feature.chroma_stft(y=y, sr=sr, n_fft=n_fft, hop_length=hop_length)
 
 # Compute amplitude envelope per hop step (using RMS)
@@ -66,6 +67,9 @@ for i in range(num_frames):
 
     # Onset
     onset_strength = float(onset_env[i]) if i < len(onset_env) else 0.0
+    onset = False;
+    if i in onsets:
+        onset = True
 
     # Chroma vector for frame i
     chroma_vector = np.round(chroma[:, i], 3).tolist()
@@ -88,7 +92,8 @@ for i in range(num_frames):
     # Store feature entry
     feature_data.append({
         "timestamp": round(timestamp, 3),
-        "onset": round(onset_strength, 3),
+        "onset_strength": round(onset_strength, 3),
+        "onset": onset,
         "amplitude": round(amplitude, 3),
         "chroma": chroma_vector,
         "beat_times": beat_at_frame,

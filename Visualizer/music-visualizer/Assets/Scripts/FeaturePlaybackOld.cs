@@ -71,7 +71,7 @@ public class FeaturePlaybackOld : MonoBehaviour
                 entry.chroma[10], entry.chroma[11]
             );
 
-            OnsetFeatures onsetFeature = new OnsetFeatures(entry.onset);
+            //OnsetFeatures onsetFeature = new OnsetFeatures(entry.on);
 
             AmplitudeFeature amplitudeFeature = new AmplitudeFeature(entry.amplitude);
 
@@ -85,7 +85,7 @@ public class FeaturePlaybackOld : MonoBehaviour
 
             // Call delegate functions
             onChromaFeatureRecieved?.Invoke(chromaFeature);
-            if (entry.onset > 0.3f) OnsetFeatureRecieved?.Invoke(onsetFeature); // Have to use same threshold as python to prevent invoking function with null data
+            //if (entry.onset > 0.3f) OnsetFeatureRecieved?.Invoke(onsetFeature); // Have to use same threshold as python to prevent invoking function with null data
             AmplitudeFeatureRecieved?.Invoke(amplitudeFeature);
 
         }
