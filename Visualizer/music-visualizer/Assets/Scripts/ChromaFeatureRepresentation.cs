@@ -26,6 +26,10 @@ public class ChromaFeatureRepresentation : MonoBehaviour
 
     [SerializeField] CircleOfFifthsVisualizer circleVisualizer;
 
+    [SerializeField] SpotlightVisualizer spotlightVisualizerL;
+    [SerializeField] SpotlightVisualizer spotlightVisualizerR;
+
+
 
     private void Start()
     {
@@ -35,6 +39,7 @@ public class ChromaFeatureRepresentation : MonoBehaviour
         FeaturePlayback.AmplitudeFeatureRecieved += AmplitudeFeatureReceived;
         FeaturePlayback.OnBeatDetected += BeatDetected;
         FeaturePlayback.OnMaxChromaRecieved += MaxChromaRecieved;
+        FeaturePlayback.OnSpectralCentroidAndBandwidthRecieved += SpectralFeaturesReceived;
     }
 
     void ChromaFeatureRecieved(ChromaFeature chromaFeature)
@@ -144,6 +149,21 @@ public class ChromaFeatureRepresentation : MonoBehaviour
         if (MaxChroma != null)
         {
             MaxChroma.UpdateFeature(maxValue);
+        }
+    }
+    void SpectralFeaturesReceived(float bandwidth, float centroid)
+    {
+        float[] entries = new float[2];
+        entries[0] = bandwidth;
+        entries[1] = centroid;
+
+        if (spotlightVisualizerL != null)
+        {
+            spotlightVisualizerL.UpdateFeature(entries);
+        }
+        if (spotlightVisualizerR != null)
+        {
+            spotlightVisualizerR.UpdateFeature(entries);
         }
     }
 }

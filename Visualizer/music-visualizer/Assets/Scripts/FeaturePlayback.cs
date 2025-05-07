@@ -9,6 +9,7 @@ using static UnityEngine.EventSystems.EventTrigger;
 using System.Collections;
 using UnityEngine.UIElements;
 using System;
+using static FeaturePlayback;
 
 public class FeaturePlayback : MonoBehaviour
 {
@@ -31,11 +32,13 @@ public class FeaturePlayback : MonoBehaviour
     public delegate void MaxChromaRecieved(float maxChroma);
     public static MaxChromaRecieved OnMaxChromaRecieved;
 
-    public delegate void SpectralCentroidRecieved(float spectralCentroid);
-    public static SpectralCentroidRecieved OnSpectralCentroidRecieved;
+    public delegate void SpectralCentroidAndBandwidthRecieved(float spectralBandwidth, float spectralCentroid);
+    public static SpectralCentroidAndBandwidthRecieved OnSpectralCentroidAndBandwidthRecieved;
 
     public delegate void SpectralBandwidthRecieved(float spectralBandwidth);
     public static SpectralBandwidthRecieved OnSpectralBandwidthRecieved;
+    
+
 
     Progress_bar progressBar;
     public AudioSource audio;
@@ -283,9 +286,9 @@ public class FeaturePlayback : MonoBehaviour
         float maxChroma = Mathf.Max(entry.chroma);
         OnMaxChromaRecieved?.Invoke(maxChroma);
 
-
-        OnSpectralCentroidRecieved?.Invoke(entry.spectral_centroid);
         OnSpectralBandwidthRecieved?.Invoke(entry.spectral_bandwidth);
+
+        OnSpectralCentroidAndBandwidthRecieved?.Invoke(entry.spectral_bandwidth, entry.spectral_centroid);
     }
 
     private bool IsBeatDetected(float? beatTime)
