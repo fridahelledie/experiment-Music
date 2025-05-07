@@ -6,11 +6,11 @@ public class CircleOfFifthsVisualizer : FeatureVisualizer
     [SerializeField] private float minScale = 0.5f;
     [SerializeField] private float maxScale = 1.5f;
     [SerializeField] private Color baseColor = Color.gray;
-    [SerializeField] private Color highlightColor = Color.cyan;
     [SerializeField] private float lerpSpeed = 5f;
 
     private Vector3[] targetScales;
     private Color[] targetColors;
+    private Color[] originalColors;
     private Renderer[] renderers;
 
     void Awake()
@@ -24,6 +24,7 @@ public class CircleOfFifthsVisualizer : FeatureVisualizer
 
         targetScales = new Vector3[12];
         targetColors = new Color[12];
+        originalColors = new Color[12];
         renderers = new Renderer[12];
 
         for (int i = 0; i < 12; i++)
@@ -32,7 +33,11 @@ public class CircleOfFifthsVisualizer : FeatureVisualizer
             renderers[i] = wedges[i].GetComponent<Renderer>();
             if (renderers[i] != null)
             {
-                renderers[i].material = new Material(renderers[i].material);  // Instance material
+                // Instance material so we don’t affect shared one
+                renderers[i].material = new Material(renderers[i].material);
+                // Store original color from material as max (highlight) color
+                originalColors[i] = renderers[i].material.color;
+                // Initialize target color as baseColor
                 targetColors[i] = baseColor;
             }
         }
@@ -52,7 +57,8 @@ public class CircleOfFifthsVisualizer : FeatureVisualizer
             float scale = Mathf.Lerp(minScale, maxScale, value);
             targetScales[i] = Vector3.one * scale;
 
-            targetColors[i] = Color.Lerp(baseColor, highlightColor, value);
+            // Lerp between baseColor and originalColor of this wedge
+            targetColors[i] = Color.Lerp(baseColor, originalColors[i], value);
         }
     }
     public override void UpdateFeature(float input)
