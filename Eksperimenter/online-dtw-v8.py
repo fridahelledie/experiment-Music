@@ -158,10 +158,10 @@ def online_tw(live_features, ref_features, _d, _P, _t, _j):
                     d[(k, j)] = EvaluatePathCost(k, j, live_features, ref_features, d)
 
         #HOT FIX that makes sure that we never make an unnecessary column followed imidietly by a row or vice versa
-        # if previous != decision and decision != "Both" and previous != None and previous != "Both":
-        #     # print(f"{previous} {P[-1]} {decision}")
-        #     P.pop(-1)
-        #     previous = "Both"
+        if previous != decision and decision != "Both" and previous != None and previous != "Both":
+            # print(f"{previous} {P[-1]} {decision}")
+            P.pop(-1)
+            previous = "Both"
         #HOT FIX END
 
         if decision == previous:

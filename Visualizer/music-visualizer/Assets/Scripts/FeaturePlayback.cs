@@ -12,7 +12,6 @@ using System;
 
 public class FeaturePlayback : MonoBehaviour
 {
-    public float songLength = 140f;
     
     private List<FeatureEntry> featureData;
     private int lastStepIndex = -1;
@@ -93,31 +92,42 @@ public class FeaturePlayback : MonoBehaviour
             }
         }
     }
-    public void startSteppingWithAlignmentFile()
+
+    bool startStep = false;
+    Queue<alignmentEntry> entries = new Queue<alignmentEntry>();
+    alignmentEntry lastEntry = new alignmentEntry("1,1");
+    public float songLength = 140f;
+    float secondsPerI = 1f;
+    int lastI = 0;
+    int iInIstep = 1;
+
+    float timeSinceLastStep = 0f;
+    float timeUntillNextStep = 0f;
+
+    private void Update()
     {
-        StartCoroutine(StepWithAlignmentFile());
+        if (!startStep)
+            return;
+
+        timeSinceLastStep += Time.deltaTime;
+        if (timeSinceLastStep > timeUntillNextStep && entries.Count() > 0)
+        {
+            lastI = StepPath();
+            timeSinceLastStep -= timeUntillNextStep;
+            timeUntillNextStep = CalculateTimeToNextStep();
+        }
     }
 
-    IEnumerator StepWithAlignmentFile()
+
+    public void startSteppingWithAlignmentFile()
     {
         songLength = audio.clip.length;
-        yield return new WaitForSeconds(5);
-        DateTime start = DateTime.Now;
-        progressBar = FindObjectOfType<Progress_bar>();
-
 
         string filePath = Path.Combine(Application.streamingAssetsPath, "alignment-path.txt");
         string fileDump = File.ReadAllText(filePath);
-
         string[] alignmentPath = fileDump.Split("\n");
 
-        Queue<alignmentEntry> entries = new Queue<alignmentEntry>();
-
-
-        alignmentEntry lastEntry = new alignmentEntry("1,1");
-
-
-        for (int i = 0; i < alignmentPath.Length; i++) 
+        for (int i = 0; i < alignmentPath.Length; i++)
         {
             alignmentEntry newEntry = new alignmentEntry(alignmentPath[i]);
 
@@ -125,13 +135,61 @@ public class FeaturePlayback : MonoBehaviour
             lastEntry = newEntry;
         }
 
+        secondsPerI = songLength / lastEntry.i;
+        
+        StartCoroutine(StepWithAlignmentFile());
+    }
 
-        float secondsPerI = songLength / lastEntry.i;
+    int StepPath()
+    {
+        alignmentEntry pathPoint = entries.Dequeue();
+        ApplyFeatureStep(featureData[pathPoint.j]);
+        progressBar.UpdateProgress(pathPoint.j);
+        
+        while (entries.Peek().i ==  pathPoint.i)
+        {
+            entries.Dequeue();
+        }
+
+        return pathPoint.i;
+    }
+
+    int CountI(int i)
+    {
+        int count = 1;
+        foreach (alignmentEntry entry in entries)
+        {
+            if (entry.i == i)
+            {
+                count++;
+            }
+            else
+            {
+                break;
+            }
+        }
+        return count;
+    }
+
+    float CalculateTimeToNextStep()
+    {
+        return secondsPerI;
+    }
+
+    IEnumerator StepWithAlignmentFile()
+    {
+        yield return new WaitForSeconds(5);
         audio.Play();
+        progressBar = FindObjectOfType<Progress_bar>();
+        yield return new WaitForSeconds(0);
+        startStep = true;
+        /*
         float lost_time = 0f;
 
         DateTime before = DateTime.Now;
         DateTime after = DateTime.Now;
+        float timePerEntry = 0;
+        float waitTime = 0;
 
         while (entries.Count > 0)
         {
@@ -146,18 +204,27 @@ public class FeaturePlayback : MonoBehaviour
                 currentIQueue.Enqueue(entries.Dequeue());
             }
 
-            float timePerEntry = (secondsPerI / (float)currentIQueue.Count);
-            float waitTime = timePerEntry;
-            print("time per entry" + timePerEntry);
-
-
+            timePerEntry = (secondsPerI / (float)currentIQueue.Count);
+            waitTime = timePerEntry;
+            //print("time per entry" + timePerEntry);
             foreach (alignmentEntry pathPoint in currentIQueue)
             {
+                float targetTime = audio.time + timePerEntry;
                 before = DateTime.Now;
                 waitTime = timePerEntry - lost_time;
                 ApplyFeatureStep(featureData[pathPoint.j]);
                 progressBar.UpdateProgress(pathPoint.j);
+                //TimeSpan sinceStart = DateTime.Now - start;
+                // if (sinceStart.TotalSeconds > currentI.i * secondsPerI)
+                //     Debug.LogWarning("Running behind! Skipping wait time");
+                // else
                 yield return new WaitForSeconds(waitTime);
+
+                //while (sinceStart.TotalSeconds < currentI.i * secondsPerI)
+                //{
+                //    sinceStart = DateTime.Now - start;
+                //    continue;
+                //}
                 after = DateTime.Now;
                 TimeSpan timeSpan = (after - before);
                 if (timeSpan.TotalSeconds > waitTime)
@@ -173,8 +240,8 @@ public class FeaturePlayback : MonoBehaviour
 
         }
         yield return null;
-        TimeSpan totalRuntime = DateTime.Now - start;
-        Debug.Log($"Total delay: {totalRuntime.TotalSeconds - songLength}");
+        //TimeSpan totalRuntime = DateTime.Now - start;
+        //Debug.Log($"Total delay: {totalRuntime.TotalSeconds - songLength}");*/
     }
 
     public class alignmentEntry

@@ -16,7 +16,7 @@ public class BeatVisualzer : MonoBehaviour
     public void TriggerBeatEffect()
     {
         // Debug log to confirm if the method is called
-        Debug.Log("Beat found yay");
+        //Debug.Log("Beat found yay");
 
         // Instantly rotate the object by the specified angle around the Y axis
         transform.Rotate(0, 0, rotationAngle);

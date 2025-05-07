@@ -693,6 +693,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audio: {fileID: 884242376}
+  songLength: 140
 --- !u!82 &884242376
 AudioSource:
   m_ObjectHideFlags: 0
@@ -703,7 +704,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: a258c1ee1bd456141b8eba317ce36959, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 1e206e11cab489c4d9143310340873cb, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1

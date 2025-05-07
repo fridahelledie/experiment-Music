@@ -49,7 +49,7 @@ buffer_size = N * hop_length
 reference_audio, sr = librosa.load(reference_audio_path)
 
 #Input audio
-input_audio_path = "audio/03BarberSonata_2.wav"
+input_audio_path = "audio/03BarberSonata_3_cut.wav"
 input_audio, sr = librosa.load(input_audio_path, sr=sr) #forces matching sampling rates between reference and input audio
 
 

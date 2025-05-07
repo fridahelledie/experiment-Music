@@ -50,10 +50,11 @@ chroma = librosa.feature.chroma_stft(y=y, sr=sr, n_fft=n_fft, hop_length=hop_len
 rms = librosa.feature.rms(y=y, frame_length=n_fft, hop_length=hop_length)[0]
 
 # Compute beats
+tempo, beat_frames = librosa.beat.beat_track(y=y, sr=sr, hop_length=hop_length)
 tempo, beat_frames = librosa.beat.beat_track(onset_envelope=onset_env,y=y, sr=sr, hop_length=hop_length)
 beat_times = librosa.frames_to_time(beat_frames, sr=sr, hop_length=hop_length)
-#unused_beats = [round(bt, 3) for bt in beat_times]
-#unused_beats.sort()
+unused_beats = [round(bt, 3) for bt in beat_times]
+unused_beats.sort()
 
 
 # Compute spectral centroid and bandwidth
@@ -91,17 +92,16 @@ for i in range(num_frames):
     amplitude = float(rms[i]) if i < len(rms) else 0.0
 
     # Check for beat occurrence at this frame
-    beat_at_frame = None
-   # if unused_beats:
-    #    beaty = abs(unused_beats[0] - timestamp)
-     #   if beaty <= (hop_length / sr): # beat is only assigned if within 1 hop
-      #      beat_at_frame = unused_beats.pop(0)
-    # Check for beat occurrence at this frame
     frame_time = timestamp
+    beat_at_frame = None
     for bt in beat_times:
         if abs(bt - frame_time) < (hop_length / sr):  # ~512 samples tolerance
             beat_at_frame = round(bt, 3)
             break
+    if unused_beats:
+        beaty = abs(unused_beats[0] - timestamp)
+        if beaty <= (hop_length / sr): # beat is only assigned if within 1 hop
+            beat_at_frame = unused_beats.pop(0)
 
     # Spectral centroid and bandwidth
     centroid = float(spectral_centroid[i]) if i < len(spectral_centroid) else 0.0
