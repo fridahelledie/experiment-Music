@@ -136,8 +136,8 @@ public class LocalServer : MonoBehaviour
         string[] stringArray = dataString.Split(',');
 
         OnsetFeatures onsetFeatures = new OnsetFeatures(
-            float.Parse(stringArray[0], CultureInfo.InvariantCulture)
-            
+            float.Parse(stringArray[0], CultureInfo.InvariantCulture),
+            false
         );
 
         return onsetFeatures;  

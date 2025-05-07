@@ -15,8 +15,7 @@ public class OnsetRepresentation : MonoBehaviour
 
     public void OnsetReceived(OnsetFeatures onsetFeature)
     {
-        Debug.Log($"Onset: {onsetFeature.Strenght}");
-        if (onsetFeature.Strenght >  activationThreshold)
+        if (onsetFeature.Detected)
         {
             Instantiate(particlePrefab, particleLocation.position, particleLocation.rotation);
         }

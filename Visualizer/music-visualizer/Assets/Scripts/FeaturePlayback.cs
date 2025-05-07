@@ -42,7 +42,8 @@ public class FeaturePlayback : MonoBehaviour
     public class FeatureEntry
     {
         public float timestamp;
-        public float onset;
+        public float onset_strength;
+        public bool onset;
         public float amplitude;
         public float[] chroma;
         public float? beat_times;
@@ -175,7 +176,7 @@ public class FeaturePlayback : MonoBehaviour
             entry.chroma[7], entry.chroma[8]
         );
         //print("chroma features");
-        OnsetFeatures onsetFeature = new OnsetFeatures(entry.onset);
+        OnsetFeatures onsetFeature = new OnsetFeatures(entry.onset_strength, entry.onset);
         AmplitudeFeature amplitudeFeature = new AmplitudeFeature(entry.amplitude);
         if (IsBeatDetected(entry.beat_times) && entry.beat_times != lastBeatTime)
         {
@@ -184,7 +185,7 @@ public class FeaturePlayback : MonoBehaviour
         }
 
         onChromaFeatureRecieved?.Invoke(chromaFeature);
-        if (entry.onset > 0.3f) OnsetFeatureRecieved?.Invoke(onsetFeature);
+        if (entry.onset_strength > 0.3f) OnsetFeatureRecieved?.Invoke(onsetFeature);
         AmplitudeFeatureRecieved?.Invoke(amplitudeFeature);
 
         float maxChroma = Mathf.Max(entry.chroma);
