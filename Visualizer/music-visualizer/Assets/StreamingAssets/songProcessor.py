@@ -55,6 +55,11 @@ beat_times = librosa.frames_to_time(beat_frames, sr=sr, hop_length=hop_length)
 #unused_beats.sort()
 
 
+# Compute spectral centroid and bandwidth
+spectral_centroid = librosa.feature.spectral_centroid(y=y, sr=sr, n_fft=n_fft, hop_length=hop_length)[0]
+spectral_bandwidth = librosa.feature.spectral_bandwidth(y=y, sr=sr, n_fft=n_fft, hop_length=hop_length)[0]
+
+
 # Initialize feature storage
 feature_data = []
 num_frames = chroma.shape[1]  # number of frames (steps)
@@ -84,6 +89,10 @@ for i in range(num_frames):
             beat_at_frame = round(bt, 3)
             break
 
+    # Spectral centroid and bandwidth
+    centroid = float(spectral_centroid[i]) if i < len(spectral_centroid) else 0.0
+    bandwidth = float(spectral_bandwidth[i]) if i < len(spectral_bandwidth) else 0.0
+
     # Store feature entry
     feature_data.append({
         "timestamp": round(timestamp, 3),
@@ -91,6 +100,8 @@ for i in range(num_frames):
         "amplitude": round(amplitude, 3),
         "chroma": chroma_vector,
         "beat_times": beat_at_frame,
+        "spectral_centroid": round(centroid, 3),
+        "spectral_bandwidth": round(bandwidth, 3)
     })
 
 print("Number of used beats:", sum(1 for f in feature_data if f["beat_times"] is not None))
