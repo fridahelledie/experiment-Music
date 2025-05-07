@@ -49,8 +49,14 @@ chroma = librosa.feature.chroma_stft(y=y, sr=sr, n_fft=n_fft, hop_length=hop_len
 rms = librosa.feature.rms(y=y, frame_length=n_fft, hop_length=hop_length)[0]
 
 # Compute beats
-tempo, beat_frames = librosa.beat.beat_track(y=y, sr=sr, hop_length=hop_length)
+tempo, beat_frames = librosa.beat.beat_track(onset_envelope=onset_env,y=y, sr=sr, hop_length=hop_length)
 beat_times = librosa.frames_to_time(beat_frames, sr=sr, hop_length=hop_length)
+unused_beats = [round(bt, 3) for bt in beat_times]
+unused_beats.sort()
+
+# Compute dynamic tempo,
+#dynamic_beat_tempo = librosa.feature.tempo(y=y, sr=sr, aggregate=None, std_bpm=4)
+#dynamic_beat_times = librosa.times_like(dynamic_beat_tempo, sr=sr)
 
 # Initialize feature storage
 feature_data = []
@@ -69,12 +75,11 @@ for i in range(num_frames):
     amplitude = float(rms[i]) if i < len(rms) else 0.0
 
     # Check for beat occurrence at this frame
-    frame_time = timestamp
     beat_at_frame = None
-    for bt in beat_times:
-        if abs(bt - frame_time) < (hop_length / sr):  # ~512 samples tolerance
-            beat_at_frame = round(bt, 3)
-            break
+    if unused_beats:
+        beaty = abs(unused_beats[0] - timestamp)
+        if beaty <= (hop_length / sr): # beat is only assigned if within 1 hop
+            beat_at_frame = unused_beats.pop(0)
 
     # Store feature entry
     feature_data.append({
@@ -85,6 +90,7 @@ for i in range(num_frames):
         "beat_times": beat_at_frame,
     })
 
+print("Number of used beats:", sum(1 for f in feature_data if f["beat_times"] is not None))
 
 # Save features to a JSON file
 os.makedirs(os.path.dirname(json_output_path), exist_ok=True)
@@ -93,8 +99,10 @@ Client.send_data("got through makedir")
 with open(json_output_path, "w") as f:
     json.dump(feature_data, f, indent=4, default=lambda x: float(x))
 
+
 Client.send_data("Should have saved" )
 Client.disconnect()
+
 
 
 

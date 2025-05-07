@@ -31,7 +31,7 @@ public class FeaturePlayback : MonoBehaviour
 
     Progress_bar progressBar;
     public AudioSource audio;
-
+    private float? lastBeatTime = null;
     [System.Serializable]
     public class FeatureEntry
     {
@@ -169,9 +169,10 @@ public class FeaturePlayback : MonoBehaviour
         //print("chroma features");
         OnsetFeatures onsetFeature = new OnsetFeatures(entry.onset);
         AmplitudeFeature amplitudeFeature = new AmplitudeFeature(entry.amplitude);
-        if (IsBeatDetected(entry.beat_times))
+        if (IsBeatDetected(entry.beat_times) && entry.beat_times != lastBeatTime)
         {
             OnBeatDetected?.Invoke();
+            lastBeatTime = entry.beat_times;
         }
 
         onChromaFeatureRecieved?.Invoke(chromaFeature);
