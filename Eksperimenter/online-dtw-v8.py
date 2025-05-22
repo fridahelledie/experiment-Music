@@ -11,6 +11,7 @@ import librosa.display
 from DLNCO_extraction_realtime import DLNCOProcessor
 import sounddevice as sd
 import threading
+from scipy.interpolate import interp1d
 
 c = 16 #Window Size
 
@@ -31,7 +32,7 @@ N = 8 # number of chroma features per chunk
 buffer_size = N * hop_length
 
 #Reference audio
-reference_audio_path = "03BarberSonata_3_cut.wav"
+reference_audio_path = "03BarberSonata_2_cut.wav"
 reference_audio, sr = librosa.load(reference_audio_path)
 
 #Input audio
@@ -158,10 +159,10 @@ def online_tw(live_features, ref_features, _d, _P, _t, _j):
                     d[(k, j)] = EvaluatePathCost(k, j, live_features, ref_features, d)
 
         #HOT FIX that makes sure that we never make an unnecessary column followed imidietly by a row or vice versa
-        if previous != decision and decision != "Both" and previous != None and previous != "Both":
-            # print(f"{previous} {P[-1]} {decision}")
-            P.pop(-1)
-            previous = "Both"
+        # if previous != decision and decision != "Both" and previous != None and previous != "Both":
+        #     # print(f"{previous} {P[-1]} {decision}")
+        #     P.pop(-1)
+        #     previous = "Both"
         #HOT FIX END
 
         if decision == previous:
@@ -346,8 +347,8 @@ def calculate_chroma_chunk(audio_chunk):
     return chroma
 
 def get_feature_chunk(audio_chunk):
-    return calculate_chroma_chunk(audio_chunk)
-
+    # return calculate_chroma_chunk(audio_chunk)
+    return dlnco.compute_chunk(audio_chunk)
 
 def mic_callback(indata, frames: int, time, status):
     global reference_features, audio_queue
@@ -435,11 +436,40 @@ compare_dtw_paths(
 #     ["blue", "orange"]
 # )
 
+time_per_frame = hop_length / sr
+# time_diff = [(j - i) * time_per_frame for i, j in P]
+# delay = np.median(time_diff)
+# print(f"Delay OLTW: {delay * 1000:.2f} ms")
+
+
+d_dtw, p_dtw = dtw(live_features, reference_features)
+# time_diff = [(j - i) * time_per_frame for i, j in p_dtw]
+# delay = np.median(time_diff)
+# print(f"Delay DTW: {delay * 1000:.2f} ms")
+p = [tuple(row) for row in p_dtw.tolist()]
+
+time_per_frame = hop_length / sr
+P_diff = [(j - i) * time_per_frame for i, j in P]
+p_diff = [(j - i) * time_per_frame for i, j in p]
+delay_P = np.median(P_diff)
+delay_p = np.median(p_diff)
+
+print(f"OLTW: {delay_P * 1000:.2f} ms , DTW: {delay_p * 1000:.2f} ms")
+
+
+
 D = construct_matrix(d, live_features, reference_features)
-show_dtw(D, np.array(P))
-with open('alignment_path.txt', 'w') as f:
-    for t, j in P:
-        f.write(f"{t},{j}\n")
+# show_dtw(D, np.array(P))
+# with open('alignment_path.txt', 'w') as f:
+#     for t, j in P:
+#         f.write(f"{t},{j}\n")
+
+compare_dtw_paths(
+    D,
+    [P, p_dtw],
+    ["OLTW", "DTW"],
+    ["blue", "orange"]
+)
 
 
 
